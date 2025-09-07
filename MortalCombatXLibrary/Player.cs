@@ -8,5 +8,11 @@ namespace MortalCombatXLibrary
 {
     public class Player
     {
+        public string username { get; set; }
+        //idk if we need anything else for the player class
+        public Player(string username)
+        {
+            this.username = username;
+        }
     }
 }
