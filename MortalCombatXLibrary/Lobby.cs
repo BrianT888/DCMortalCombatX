@@ -10,15 +10,18 @@ namespace MortalCombatXLibrary
     {
         public String lobbyName { get; set; }
         public List<Player> players { get; set; }//list of players in the lobby currently?
+        public List<String> msgHistory { get; set; } //list of text messages in the lobby?
+
         //do i need like a list of strings for the text msgs?
         public Lobby(String lobbyName)
         {
             this.lobbyName = lobbyName;
             players = new List<Player>();
+            msgHistory = new List<String>();
         }
 
         //perhaps a method to add players to the lobby?
-        public void AddPlayer(Player player)//might be useful maybe
+        public void AddPlayer(Player player)
         {
             players.Add(player);
         }
@@ -31,6 +34,11 @@ namespace MortalCombatXLibrary
         public List<Player> showPlayers()
         {
             return players;
+        }
+
+        public void AddMessage(String msg)
+        {
+            msgHistory.Add(msg);
         }
     }
 }
