@@ -9,10 +9,5 @@ namespace MortalCombatXLibrary
     public class Player
     {
         public string Username { get; set; }
-        //idk if we need anything else for the player class
-        public Player(string username)
-        {
-            Username = username;
-        }
     }
 }
