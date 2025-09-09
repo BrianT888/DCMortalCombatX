@@ -24,7 +24,7 @@ namespace MortalCombatXClient
             InitializeComponent();
 
             // can we set up url and connection here?
-            string URL = "net.tcp://0.0.0.0:8100/DataService";
+            //string URL = "net.tcp://0.0.0.0:8100/DataService";
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

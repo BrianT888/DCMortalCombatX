@@ -1,0 +1,32 @@
+﻿<Window x:Class="MortalCombatXClient.LobbyScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MortalCombatXClient"
+        mc:Ignorable="d"
+        Title="LobbyScreen" Height="450" Width="800">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/lobbywallpaper.jpg"/>
+        </Grid.Background>
+        <Rectangle HorizontalAlignment="Left" Height="382" Margin="10,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="380"/>
+        <Rectangle HorizontalAlignment="Left" Height="382" Margin="390,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="400"/>
+        <TextBlock HorizontalAlignment="Left" Margin="400,28,0,0" TextWrapping="Wrap" Text="Lobby Menu" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="398,57,40,191"/>
+        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="10" Background="MediumSlateBlue" Margin="534,277,154,125">
+            <Button Content="Join Lobby" HorizontalAlignment="Left" Margin="519,307,0,0" VerticalAlignment="Top" Height="33" Width="112" Click="JoinLobbyButton_Click"/>
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Margin="553,283,0,0" TextWrapping="Wrap" Text="Join Lobby" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
+        <TextBlock HorizontalAlignment="Left" Margin="112,146,0,0" TextWrapping="Wrap" Text="Enter Lobby Name" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Top"/>
+        <TextBox x:Name="CreatedLobbyName" HorizontalAlignment="Left" Margin="112,167,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="176" Height="26"/>
+        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="10" Background="MediumSlateBlue" Margin="144,210,544,192">
+            <Button Content="Create Lobby" HorizontalAlignment="Left" Margin="220,304,0,0" VerticalAlignment="Top" Click="CreateLobbyButton_Click"/>
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Margin="154,216,0,0" TextWrapping="Wrap" Text="Create Lobby" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
+        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="8" Background="MediumSlateBlue" Margin="15,372,694,36">
+            <Button Content="Exit Game" HorizontalAlignment="Left" Margin="72,304,0,0" VerticalAlignment="Top" Click="ExitGameButton_Click"/>
+        </Border>
+        <TextBlock HorizontalAlignment="Left" Margin="26,374,0,0" TextWrapping="Wrap" Text="Exit Game" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
+    </Grid>
+</Window>
