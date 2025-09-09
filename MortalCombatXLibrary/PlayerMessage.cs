@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MortalCombatXLibrary
 {
-    public class Message
+    public class PlayerMessage
     {
         public string Sender { get; set; }
         public string Content { get; set; }

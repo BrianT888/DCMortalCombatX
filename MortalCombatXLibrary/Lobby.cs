@@ -12,6 +12,6 @@ namespace MortalCombatXLibrary
         public String LobbyName { get; set; }
         public ConcurrentDictionary<string, Player> Players { get; } = new ConcurrentDictionary<string, Player>(); //list of players in the lobby currently?
         // Jaxon: changed it to concurrent dict bc might cause issues if multiple clients access it at the same time
-        public ConcurrentQueue<Message> Messages { get; } = new ConcurrentQueue<Message>();     // Stores all lobby messages (Queue to make sure its in order bc apparently ConcurrentLists dont always stay in order)
+        public ConcurrentQueue<PlayerMessage> Messages { get; } = new ConcurrentQueue<PlayerMessage>();     // Stores all lobby messages (Queue to make sure its in order bc apparently ConcurrentLists dont always stay in order)
     }
 }

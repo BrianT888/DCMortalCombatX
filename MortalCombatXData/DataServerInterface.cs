@@ -21,9 +21,9 @@ namespace MortalCombatXData
     {
         // --- Player Management --- 
         [OperationContract]
-        bool AddNewPlayer(Player player);
+        bool AddNewPlayer(string username);
         [OperationContract]
-        bool RemovePlayer(Player player);
+        bool RemovePlayer(string username);
         [OperationContract]
         List<Player> GetAllPlayers();
 
@@ -38,14 +38,16 @@ namespace MortalCombatXData
         bool RemovePlayerFromLobby(string lobbyName, string username);
         [OperationContract]
         List<Lobby> GetAllLobbies();
+        [OperationContract]
+        List<Player> GetPlayersInLobby(string lobbyName);
 
         // --- Message Management ---
         [OperationContract]
-        bool LobbyMessage(string lobbyName, Message message);
+        bool SendLobbyMessage(string lobbyName, PlayerMessage message);
         [OperationContract]
-        List<Message> getLobbyMessages(string lobbyName);
+        List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
-        bool PrivateMessage(string fromUser, string toUser, Message message);
+        bool PrivateMessage(string fromUser, string toUser, PlayerMessage message);
 
         // --- File Sharing ---
         [OperationContract]

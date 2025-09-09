@@ -27,6 +27,11 @@ namespace MortalCombatXLibrary
         {
             return Players.TryRemove(username, out _);
         }
+        // Return list of all players
+        public List<Player> GetAllPlayers()
+        {
+            return Players.Values.ToList();
+        }
 
         // Create a lobby
         public bool CreateLobby(string lobbyName)
@@ -38,7 +43,6 @@ namespace MortalCombatXLibrary
         {
             return Lobbies.TryRemove(lobbyName, out _);
         }
-
         // Add a player to a lobby
         public bool AddPlayerToLobby(string lobbyName, string username)
         {
@@ -57,17 +61,31 @@ namespace MortalCombatXLibrary
             }
             return false;
         }
+        // Return list of all lobbies
+        public List<Lobby> GetAllLobbies()
+        {
+            return Lobbies.Values.ToList();
+        }
+        // Return list of players in given lobby
+        public List<Player> GetPlayersInLobby(string lobbyName)
+        {
+            if (Lobbies.TryGetValue(lobbyName, out Lobby lobby))
+            {
+                return lobby.Players.Values.ToList();
+            }
+            return null;
+        }
 
         // Send a message in a lobby
-        public void SendMessage(string lobbyName, string sender, string content) 
+        public void SendLobbyMessage(string lobbyName, PlayerMessage message) 
         { 
             if (Lobbies.TryGetValue(lobbyName, out Lobby lobby))
             {
-                lobby.Messages.Enqueue(new Message { Sender = sender, Content = content });
+                lobby.Messages.Enqueue(message);
             }
         }
         // Get all messages in a lobby
-        public List<Message> GetMessages(string lobbyName)
+        public List<PlayerMessage> GetLobbyMessages(string lobbyName)
         {
             if (Lobbies.TryGetValue(lobbyName, out Lobby lobby))
             {
