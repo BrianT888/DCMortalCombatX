@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,37 +9,9 @@ namespace MortalCombatXLibrary
 {
     public class Lobby
     {
-        public String lobbyName { get; set; }
-        public List<Player> players { get; set; }//list of players in the lobby currently?
-        public List<String> msgHistory { get; set; } //list of text messages in the lobby?
-
-        //do i need like a list of strings for the text msgs?
-        public Lobby(String lobbyName)
-        {
-            this.lobbyName = lobbyName;
-            players = new List<Player>();
-            msgHistory = new List<String>();
-        }
-
-        //perhaps a method to add players to the lobby?
-        public void AddPlayer(Player player)
-        {
-            players.Add(player);
-        }
-        //method to for players to leave the lobby
-        public void RemovePlayer(Player player)
-        {
-            players.Remove(player);
-        }
-        //return list of players to be used to show which players are currently in the lobby?
-        public List<Player> showPlayers()
-        {
-            return players;
-        }
-
-        public void AddMessage(String msg)
-        {
-            msgHistory.Add(msg);
-        }
+        public String LobbyName { get; set; }
+        public ConcurrentDictionary<string, Player> Players { get; } = new ConcurrentDictionary<string, Player>(); //list of players in the lobby currently?
+        // Jaxon: changed it to concurrent dict bc might cause issues if multiple clients access it at the same time
+        public ConcurrentQueue<PlayerMessage> Messages { get; } = new ConcurrentQueue<PlayerMessage>();     // Stores all lobby messages (Queue to make sure its in order bc apparently ConcurrentLists dont always stay in order)
     }
 }
