@@ -30,6 +30,17 @@ namespace GamingLobbyServer
                 }
 
                 DataServerInterface channel = GetDataChannel();
+
+                // Check if username already exists
+                List<Player> currentPlayers = channel.GetAllPlayers();
+                foreach (Player p in currentPlayers)
+                {
+                    if (p.Username.ToLower() == username.ToLower())
+                    {
+                        return false;     // Will change this to a custom exception that contains an infomartive message about the error
+                    }
+                }
+
                 return channel.AddNewPlayer(username);
             }
             catch (Exception ex)
@@ -77,6 +88,17 @@ namespace GamingLobbyServer
                 }
 
                 DataServerInterface channel = GetDataChannel();
+
+                // Check if lobby name already exists
+                List<Lobby> currentLobbies = channel.GetAllLobbies();
+                foreach (Lobby l in currentLobbies)
+                {
+                    if (l.LobbyName.ToLower() == lobbyName.ToLower())
+                    {
+                        return false;     // Will change this to a custom exception that contains an infomartive message about the error
+                    }
+                }
+
                 return channel.CreateLobby(lobbyName);
             }
             catch (Exception ex)

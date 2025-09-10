@@ -25,11 +25,6 @@ namespace MortalCombatXClient
             foob = foobFactory.CreateChannel();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = EnteredText.Text;
