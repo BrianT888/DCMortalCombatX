@@ -14,7 +14,7 @@ namespace GamingLobbyServer
 
         public GamingLobbyServer()
         {
-            //I think we need a constructor for this similar to business?
+            //brian - I think we need a constructor for this similar to business?
             ChannelFactory<DataServerInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();
 

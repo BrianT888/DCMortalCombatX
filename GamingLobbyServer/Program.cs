@@ -1,6 +1,8 @@
-﻿using System;
+﻿using MortalCombatXData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +12,20 @@ namespace GamingLobbyServer
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Attempting to host the Gaming Lobby Server service...");
+
+            ServiceHost host = new ServiceHost(typeof(DataServer));
+            NetTcpBinding tcp = new NetTcpBinding();
+
+            host.AddServiceEndpoint(typeof(DataServerInterface), tcp, "net.tcp://0.0.0.0:8200/GamingLobbyServer");
+
+            // Open host
+            host.Open();
+            Console.WriteLine("Successful. GamingLobbyServer is now online.");
+            Console.ReadLine();
+
+            // Close host when finished
+            host.Close();
         }
     }
 }
