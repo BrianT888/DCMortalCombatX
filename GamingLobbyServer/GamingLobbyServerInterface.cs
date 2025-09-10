@@ -35,9 +35,9 @@ namespace GamingLobbyServer
 
         // --- Message Management ---
         [OperationContract]
-        bool SendLobbyMessage(string lobbyName, PlayerMessage message);
+        bool SendLobbyMessage(string lobbyName, string username, string message);
         [OperationContract]
-        bool SendPrivateMessage(string fromUser, string toUser, PlayerMessage message);
+        bool SendPrivateMessage(string fromUser, string toUser, string message);
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
 

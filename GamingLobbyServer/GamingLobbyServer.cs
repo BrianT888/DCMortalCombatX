@@ -9,7 +9,6 @@ namespace GamingLobbyServer
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class GamingLobbyServer : GamingLobbyServerInterface
     {
-        //brian - haven't done the logic yet
         uint LogNumber = 0; //brian - just incase we wanted to do the log thing and keep track of stuff imma keep this here, if not we can remove it later
 
         // Creates channel to Data Tier
@@ -171,7 +170,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateMessage(string fromUser, string toUser, PlayerMessage message)     // not done
+        public bool SendPrivateMessage(string fromUser, string toUser, string message)     // not done
         {
             try
             {
