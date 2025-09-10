@@ -13,9 +13,9 @@ namespace GamingLobbyServer
 
         // --- Player Management --- 
         [OperationContract]
-        bool AddNewPlayer(string username);
+        bool Login(string username);
         [OperationContract]
-        bool RemovePlayer(string username);
+        bool Logout(string username);
         [OperationContract]
         List<Player> GetAllPlayers();
 
@@ -25,9 +25,9 @@ namespace GamingLobbyServer
         [OperationContract]
         bool DeleteLobby(string lobbyName);
         [OperationContract]
-        bool AddPlayerToLobby(string lobbyName, string username);
+        bool JoinLobby(string lobbyName, string username);
         [OperationContract]
-        bool RemovePlayerFromLobby(string lobbyName, string username);
+        bool LeaveLobby(string lobbyName, string username);
         [OperationContract]
         List<Lobby> GetAllLobbies();
         [OperationContract]
@@ -39,7 +39,7 @@ namespace GamingLobbyServer
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
-        bool PrivateMessage(string fromUser, string toUser, PlayerMessage message);
+        bool SendPrivateMessage(string fromUser, string toUser, PlayerMessage message);
 
         // --- File Sharing ---
         [OperationContract]
