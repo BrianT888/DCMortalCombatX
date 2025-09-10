@@ -14,10 +14,10 @@ namespace GamingLobbyServer
         {
             Console.WriteLine("Attempting to host the Gaming Lobby Server service...");
 
-            ServiceHost host = new ServiceHost(typeof(DataServer));
+            ServiceHost host = new ServiceHost(typeof(GamingLobbyServer));
             NetTcpBinding tcp = new NetTcpBinding();
 
-            host.AddServiceEndpoint(typeof(DataServerInterface), tcp, "net.tcp://0.0.0.0:8200/GamingLobbyServer");
+            host.AddServiceEndpoint(typeof(GamingLobbyServerInterface), tcp, "net.tcp://0.0.0.0:8200/GamingLobbyServer");
 
             // Open host
             host.Open();
