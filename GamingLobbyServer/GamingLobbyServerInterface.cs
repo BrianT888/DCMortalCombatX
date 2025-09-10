@@ -37,9 +37,9 @@ namespace GamingLobbyServer
         [OperationContract]
         bool SendLobbyMessage(string lobbyName, PlayerMessage message);
         [OperationContract]
-        List<PlayerMessage> GetLobbyMessages(string lobbyName);
-        [OperationContract]
         bool SendPrivateMessage(string fromUser, string toUser, PlayerMessage message);
+        [OperationContract]
+        List<PlayerMessage> GetLobbyMessages(string lobbyName);
 
         // --- File Sharing ---
         [OperationContract]
