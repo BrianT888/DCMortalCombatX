@@ -24,11 +24,6 @@ namespace GamingLobbyServer
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(username) || username.Length > 25)     // Username can't be empty or longer than 25 characters
-                {
-                    return false;
-                }
-
                 DataServerInterface channel = GetDataChannel();
 
                 // Check if username already exists
@@ -37,11 +32,15 @@ namespace GamingLobbyServer
                 {
                     if (p.Username.ToLower() == username.ToLower())
                     {
-                        return false;     // Will change this to a custom exception that contains an infomartive message about the error
+                        throw new FaultException("Username already exists");     // Will change this to a custom exception that contains an infomartive message about the error
                     }
                 }
 
                 return channel.AddNewPlayer(username);
+            }
+            catch (FaultException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -82,11 +81,6 @@ namespace GamingLobbyServer
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(lobbyName) || lobbyName.Length > 25)     // Lobby name can't be empty or longer than 25 characters
-                {
-                    return false;
-                }
-
                 DataServerInterface channel = GetDataChannel();
 
                 // Check if lobby name already exists
@@ -178,11 +172,6 @@ namespace GamingLobbyServer
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(message) || message.Length > 100)     // Message can't be empty or longer than 100 characters
-                {
-                    return false;
-                }
-
                 DataServerInterface channel = GetDataChannel();
                 return channel.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
             }
