@@ -17,7 +17,7 @@ namespace MortalCombatXData
     // File Sharing - Handles sharing files in the lobby.
 
     [ServiceContract]
-    public interface DataServerInterface
+    public interface DataServerInterface//brian- perhaps change it to MortalCombatXDataInterface?
     {
         // --- Player Management --- 
         [OperationContract]

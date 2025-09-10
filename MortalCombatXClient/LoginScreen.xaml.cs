@@ -47,6 +47,9 @@ namespace MortalCombatXClient
                 //{
                 //    MessageBox.Show("Username is taken, choose different username");
                 //}
+
+                //brian - i assume any username is valid, so special characters are fine?
+
             }
             else
             {
