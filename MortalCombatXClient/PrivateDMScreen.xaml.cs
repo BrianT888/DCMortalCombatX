@@ -25,25 +25,49 @@ namespace MortalCombatXClient
         private string username;
         private string targetPlayer;
         private bool keepPolling = true;
-        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob)
+        LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm 
+        //brian - though i believe if we have multiple private dms open i don't think logging out from one will close the others
+        //brian - but i think we can do a reverse method, where if this lobbydm is closed, it will close all private dms that are holding this object?
+        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen)
         {
             InitializeComponent();
             this.username = username;
             this.targetPlayer = targetPlayer;
             this.foob = foob;
+            this.lobbyDMScreen = lobbyDMScreen;
 
             TargetPlayer.Text = targetPlayer;
 
             Polling();
         }
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                keepPolling = false;
+                await Task.Run(() => foob.Logout(username));
+                LoginScreen loginScreen = new LoginScreen();
+                loginScreen.Show();
+                lobbyDMScreen.Close();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
+            }
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - i think returning from a private dm should just close the window nothing else
         {
-            // return back to the lobby screen
+            try
+            {
+                keepPolling = false;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error leaving lobby: " + ex.Message, "Leave Lobby Error");
+            }
         }
 
         private void SendDMButton_Click(object sender, RoutedEventArgs e)
@@ -54,15 +78,18 @@ namespace MortalCombatXClient
         private async Task UpdateDMStats()
         {
             Queue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));
-            List<string> dmDisplayList = new List<string>();
-
-            foreach (PlayerMessage dm in dms)
+            if(dms != null)//brian - this is to avoid null reference, when dming someone for the first time
             {
-                string text = dm.Sender.ToString() + ": " + dm.Content;
-                dmDisplayList.Add(text);
-            }
+                List<string> dmDisplayList = new List<string>();
 
-            Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
+                foreach (PlayerMessage dm in dms)
+                {
+                    string text = dm.Sender.ToString() + ": " + dm.Content;
+                    dmDisplayList.Add(text);
+                }
+
+                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
+            }
         }
         private async void Polling()//brian - my version of ur polling system
         {

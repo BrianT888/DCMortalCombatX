@@ -47,7 +47,7 @@ namespace MortalCombatXClient
                     MessageBox.Show("You cannot DM yourself!", "Invalid Selection");
                     return;
                 }
-                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob);
+                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);//brian - this ref is for privatedm field to sync closing
                 privateDMScreen.Show();
             }
             else
@@ -107,7 +107,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?, also randomly just got a communcation fault on GetLobbyMsgs, but i think thats cause smt else died shouldn't happen normally?
             List<string> displayMessages = new List<string>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
