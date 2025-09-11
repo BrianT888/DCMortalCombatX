@@ -6,6 +6,40 @@
         xmlns:local="clr-namespace:MortalCombatXClient"
         mc:Ignorable="d"
         Title="LobbyScreen" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF5A3EBD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF4B2FA5"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/lobbywallpaper.jpg"/>
@@ -13,20 +47,13 @@
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="10,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="380"/>
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="390,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="400"/>
         <TextBlock HorizontalAlignment="Left" Margin="400,28,0,0" TextWrapping="Wrap" Text="Lobby Menu" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
-        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="398,57,40,191"/>
-        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="10" Background="MediumSlateBlue" Margin="534,277,154,125">
-            <Button Content="Join Lobby" HorizontalAlignment="Left" Margin="519,307,0,0" VerticalAlignment="Top" Height="33" Width="112" Click="JoinLobbyButton_Click"/>
-        </Border>
-        <TextBlock HorizontalAlignment="Left" Margin="553,283,0,0" TextWrapping="Wrap" Text="Join Lobby" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Name="LobbyList"  Margin="400,57,0,0" Width="375" Height="250" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="112,146,0,0" TextWrapping="Wrap" Text="Enter Lobby Name" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Top"/>
-        <TextBox x:Name="CreatedLobbyName" HorizontalAlignment="Left" Margin="112,167,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="176" Height="26"/>
-        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="10" Background="MediumSlateBlue" Margin="144,210,544,192">
-            <Button Content="Create Lobby" HorizontalAlignment="Left" Margin="220,304,0,0" VerticalAlignment="Top" Click="CreateLobbyButton_Click"/>
-        </Border>
-        <TextBlock HorizontalAlignment="Left" Margin="154,216,0,0" TextWrapping="Wrap" Text="Create Lobby" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
-        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="8" Background="MediumSlateBlue" Margin="15,372,694,36">
-            <Button Content="Exit Game" HorizontalAlignment="Left" Margin="72,304,0,0" VerticalAlignment="Top" Click="ExitGameButton_Click"/>
-        </Border>
-        <TextBlock HorizontalAlignment="Left" Margin="26,374,0,0" TextWrapping="Wrap" Text="Exit Game" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False"/>
+        <TextBox x:Name="CreatedLobbyName" HorizontalAlignment="Left" Margin="112,167,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="176" Height="26"/>
+        <ProgressBar x:Name="LoadingBar" Width="120" Height="10" Margin="525,315,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
+
+        <Button Name="JoinLobbyButton" Content="Join Lobby" Style="{StaticResource RoundedButtonStyle}" Click="JoinLobbyButton_Click" Margin="525,335,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="CreateLobbyButton" Content="Create Lobby" Style="{StaticResource RoundedButtonStyle}" Click="CreateLobbyButton_Click" Margin="144,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="LogoutButton" Content="Logout" Style="{StaticResource RoundedButtonStyle}" Click="LogoutButton_Click" Margin="20,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>

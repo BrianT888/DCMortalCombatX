@@ -1,7 +1,6 @@
 ﻿using MortalCombatXLibrary;
 using System.Collections.Generic;
 using System.ServiceModel;
-using MortalCombatXLibrary;
 
 namespace GamingLobbyServer
 {
@@ -26,6 +25,7 @@ namespace GamingLobbyServer
 
         // --- Lobby Management ---
         [OperationContract]
+        [FaultContract(typeof(LobbyExistsFault))]
         bool CreateLobby(string lobbyName);
 
         [OperationContract]
