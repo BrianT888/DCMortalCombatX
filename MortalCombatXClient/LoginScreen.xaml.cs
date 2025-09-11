@@ -39,7 +39,8 @@ namespace MortalCombatXClient
             {
                 try
                 {
-                    LoginButton.IsEnabled = false;      
+                    LoginButton.IsEnabled = false;
+                    LoadingBar.Visibility = Visibility.Visible;
 
                     await Task.Run(() => foob.Login(username));
 
@@ -50,6 +51,7 @@ namespace MortalCombatXClient
                 }
                 catch(FaultException<UsernameExistsFault> ex) 
                 {
+                    LoadingBar.Visibility = Visibility.Collapsed;
                     MessageBox.Show(ex.Detail.Message, "Login Error");
                     LoginButton.IsEnabled = true;
                 }
