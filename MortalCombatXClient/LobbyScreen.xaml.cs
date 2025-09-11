@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GamingLobbyServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,13 @@ namespace MortalCombatXClient
     /// </summary>
     public partial class LobbyScreen : Window
     {
-        public LobbyScreen()
+        private GamingLobbyServerInterface foob;
+        private string Username;
+        public LobbyScreen(string username, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
+            Username = username;
+            this.foob = foob;
         }
 
         private void CreateLobbyButton_Click(object sender, RoutedEventArgs e)

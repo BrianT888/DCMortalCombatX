@@ -56,6 +56,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MortalCombatXData\MortalCombatXData.csproj">
+      <Project>{ccacc673-ca7b-4e15-bcde-efbff87c09cc}</Project>
+      <Name>MortalCombatXData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MortalCombatXLibrary\MortalCombatXLibrary.csproj">
       <Project>{54ef23a3-445e-4cee-b284-0e100136d7a9}</Project>
       <Name>MortalCombatXLibrary</Name>

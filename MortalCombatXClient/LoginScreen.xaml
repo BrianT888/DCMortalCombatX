@@ -6,16 +6,51 @@
         xmlns:local="clr-namespace:MortalCombatXClient"
         mc:Ignorable="d"
         Title="LoginScreen" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF5A3EBD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF4B2FA5"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/mortalkombatwallpaper.jpg"/>
         </Grid.Background>
         <TextBlock HorizontalAlignment="Left" Margin="98,202,0,0" TextWrapping="Wrap" Text="Username" Foreground="Black" FontSize="12" FontWeight="Medium" VerticalAlignment="Top"/>
-        <TextBox x:Name="EnteredText" HorizontalAlignment="Left" Margin="98,217,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="212" TextChanged="TextBox_TextChanged" Background="Lavender" Height="27"/>
-        <Border BorderBrush="#FF000000" BorderThickness="0.8" CornerRadius="12" Background="MediumSlateBlue" Margin="147,267,540,135">
-            <Button Content="Login" HorizontalAlignment="Left" Margin="116,297,0,0" VerticalAlignment="Top" Height="52" Width="167" Click="LoginButton_Click"/>
+        <TextBox x:Name="EnteredText" HorizontalAlignment="Left" Margin="98,217,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="212" Background="Lavender" Height="27"/>
+        <Border BorderBrush="#FF000000" BorderThickness="1.2" CornerRadius="12" Background="MediumSlateBlue" 
+            Margin="160,270,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button Name="LoginButton" Content="Login" Style="{StaticResource RoundedButtonStyle}" Background="Transparent" Width="80" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LoginButton_Click"/>
         </Border>
-        <TextBlock HorizontalAlignment="Left" Margin="183,273,0,0" TextWrapping="Wrap" Text="Login" Foreground="White" FontSize="15" FontWeight="Medium" VerticalAlignment="Top" IsHitTestVisible="False" Height="20" Width="42"/>
+        <ProgressBar x:Name="LoadingBar" Width="80" Height="10" Margin="160,252,0,0" 
+             HorizontalAlignment="Left" VerticalAlignment="Top" 
+             IsIndeterminate="True" Visibility="Collapsed"/>
 
     </Grid>
 </Window>

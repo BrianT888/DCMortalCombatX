@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace MortalCombatXData
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]      // Not sure if we need these parameters, but prac 4/5 uses them so i added them
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class DataServer : DataServerInterface
     {
         private static Database db = new Database();
