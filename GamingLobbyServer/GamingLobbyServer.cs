@@ -11,7 +11,13 @@ namespace GamingLobbyServer
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class GamingLobbyServer : GamingLobbyServerInterface
     {
+        private DataServerInterface foob;
         uint LogNumber = 0; //brian - just incase we wanted to do the log thing and keep track of stuff imma keep this here, if not we can remove it later
+
+        public GamingLobbyServer()
+        {
+            foob = GetDataChannel();
+        }
 
         // Creates channel to Data Tier
         private DataServerInterface GetDataChannel()
@@ -31,10 +37,8 @@ namespace GamingLobbyServer
         // --- Player Management ---
         public bool Login(string username)
         {
-            DataServerInterface channel = GetDataChannel();
-
             // Check if username already exists
-            List<Player> currentPlayers = channel.GetAllPlayers();
+            List<Player> currentPlayers = foob.GetAllPlayers();
             foreach (Player p in currentPlayers)
             {
                 if (p.Username.ToLower() == username.ToLower())     
@@ -44,21 +48,20 @@ namespace GamingLobbyServer
                 }
             }
 
-            bool success = channel.AddNewPlayer(username);
+            bool success = foob.AddNewPlayer(username);
             if (success)
             {
-                Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", channel.GetAllPlayers().Select(p => p.Username)));
+                Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
             }
             return success;
         }
 
         public bool Logout(string username)
         {
-            DataServerInterface channel = GetDataChannel();
-            bool success = channel.RemovePlayer(username);
+            bool success = foob.RemovePlayer(username);
             if (success)
             {
-                Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", channel.GetAllPlayers().Select(p => p.Username)));
+                Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
             }
             return success;
         }
@@ -67,8 +70,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.GetAllPlayers();
+                return foob.GetAllPlayers();
             }
             catch (Exception ex)
             {
@@ -80,10 +82,8 @@ namespace GamingLobbyServer
         // --- Lobby Management ---
         public bool CreateLobby(string lobbyName)
         {
-            DataServerInterface channel = GetDataChannel();
-
             // Check if lobby name already exists
-            List<Lobby> currentLobbies = channel.GetAllLobbies();
+            List<Lobby> currentLobbies = foob.GetAllLobbies();
             foreach (Lobby l in currentLobbies)
             {
                 if (l.LobbyName.ToLower() == lobbyName.ToLower())
@@ -93,43 +93,40 @@ namespace GamingLobbyServer
                 }
             }
 
-            bool success = channel.CreateLobby(lobbyName);
+            bool success = foob.CreateLobby(lobbyName);
             if (success)
             {
-                Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", channel.GetAllLobbies().Select(l => l.LobbyName)));
+                Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
             return success;
         }
 
         public bool DeleteLobby(string lobbyName)
         {
-            DataServerInterface channel = GetDataChannel();
-            bool success = channel.DeleteLobby(lobbyName);
+            bool success = foob.DeleteLobby(lobbyName);
             if (success)
             {
-                Log($"Lobby '{lobbyName}' successfully deleted.\nLobby list: " + string.Join(", ", channel.GetAllLobbies().Select(l => l.LobbyName)));
+                Log($"Lobby '{lobbyName}' successfully deleted.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
             return success;
         }
 
         public bool JoinLobby(string lobbyName, string username)
         {
-            DataServerInterface channel = GetDataChannel();
-            bool success = channel.AddPlayerToLobby(lobbyName, username);
+            bool success = foob.AddPlayerToLobby(lobbyName, username);
             if (success)
             {
-                Log($"Player '{username}' successfully joined Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", channel.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
+                Log($"Player '{username}' successfully joined Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
             }
             return success;
         }
 
         public bool LeaveLobby(string lobbyName, string username)
         {
-            DataServerInterface channel = GetDataChannel();
-            bool success = channel.RemovePlayerFromLobby(lobbyName, username);
+            bool success = foob.RemovePlayerFromLobby(lobbyName, username);
             if (success)
             {
-                Log($"Player '{username}' successfully left Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", channel.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
+                Log($"Player '{username}' successfully left Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
             }
             return success;
         }
@@ -138,8 +135,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.GetAllLobbies();
+                return foob.GetAllLobbies();
             }
             catch (Exception ex)
             {
@@ -151,8 +147,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.GetPlayersInLobby(lobbyName);
+                return foob.GetPlayersInLobby(lobbyName);
             }
             catch (Exception ex)
             {
@@ -166,8 +161,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
+                return foob.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
             }
             catch (Exception ex)
             {
@@ -179,7 +173,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
+                //brian- imma just leave this since u said it ain't done yet
                 return false;
             }
             catch (Exception ex)
@@ -192,8 +186,7 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.GetLobbyMessages(lobbyName);
+                return foob.GetLobbyMessages(lobbyName);
             }
             catch (Exception ex)
             {
@@ -207,7 +200,6 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
                 return false;
             }
             catch (Exception ex)
@@ -222,7 +214,6 @@ namespace GamingLobbyServer
         {
             try
             {
-                DataServerInterface channel = GetDataChannel();
                 return false;
             }
             catch (Exception ex)
