@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using MortalCombatXData;
 using System.ServiceModel;
+using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace GamingLobbyServer
 {
@@ -17,6 +19,13 @@ namespace GamingLobbyServer
             ChannelFactory<DataServerInterface> factory = new ChannelFactory<DataServerInterface>(new NetTcpBinding(), "net.tcp://localhost:8100/DataService");
 
             return factory.CreateChannel();
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private void Log(string message)
+        {
+            LogNumber++;
+            Console.WriteLine("Log " + LogNumber + ": " + message);
         }
 
         // --- Player Management ---
@@ -35,21 +44,23 @@ namespace GamingLobbyServer
                 }
             }
 
-            return channel.AddNewPlayer(username);         
+            bool success = channel.AddNewPlayer(username);
+            if (success)
+            {
+                Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", channel.GetAllPlayers().Select(p => p.Username)));
+            }
+            return success;
         }
 
         public bool Logout(string username)
         {
-
-            try
+            DataServerInterface channel = GetDataChannel();
+            bool success = channel.RemovePlayer(username);
+            if (success)
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.RemovePlayer(username);
+                Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", channel.GetAllPlayers().Select(p => p.Username)));
             }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return success;
         }
 
         public List<Player> GetAllPlayers()
@@ -82,46 +93,45 @@ namespace GamingLobbyServer
                 }
             }
 
-            return channel.CreateLobby(lobbyName);
+            bool success = channel.CreateLobby(lobbyName);
+            if (success)
+            {
+                Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", channel.GetAllLobbies().Select(l => l.LobbyName)));
+            }
+            return success;
         }
 
         public bool DeleteLobby(string lobbyName)
         {
-            try
+            DataServerInterface channel = GetDataChannel();
+            bool success = channel.DeleteLobby(lobbyName);
+            if (success)
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.DeleteLobby(lobbyName);
+                Log($"Lobby '{lobbyName}' successfully deleted.\nLobby list: " + string.Join(", ", channel.GetAllLobbies().Select(l => l.LobbyName)));
             }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return success;
         }
 
         public bool JoinLobby(string lobbyName, string username)
         {
-            try
+            DataServerInterface channel = GetDataChannel();
+            bool success = channel.AddPlayerToLobby(lobbyName, username);
+            if (success)
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.AddPlayerToLobby(lobbyName, username);
+                Log($"Player '{username}' successfully joined Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", channel.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
             }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return success;
         }
 
         public bool LeaveLobby(string lobbyName, string username)
         {
-            try
+            DataServerInterface channel = GetDataChannel();
+            bool success = channel.RemovePlayerFromLobby(lobbyName, username);
+            if (success)
             {
-                DataServerInterface channel = GetDataChannel();
-                return channel.RemovePlayerFromLobby(lobbyName, username);
+                Log($"Player '{username}' successfully left Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", channel.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
             }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return success;
         }
 
         public List<Lobby> GetAllLobbies()

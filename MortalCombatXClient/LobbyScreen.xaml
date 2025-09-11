@@ -54,6 +54,6 @@
 
         <Button Name="JoinLobbyButton" Content="Join Lobby" Style="{StaticResource RoundedButtonStyle}" Click="JoinLobbyButton_Click" Margin="525,335,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button Name="CreateLobbyButton" Content="Create Lobby" Style="{StaticResource RoundedButtonStyle}" Click="CreateLobbyButton_Click" Margin="144,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Name="ExitGameButton" Content="Exit Game" Style="{StaticResource RoundedButtonStyle}" Click="ExitGameButton_Click" Margin="20,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="LogoutButton" Content="Logout" Style="{StaticResource RoundedButtonStyle}" Click="LogoutButton_Click" Margin="20,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>

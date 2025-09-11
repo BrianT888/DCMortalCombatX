@@ -88,9 +88,23 @@ namespace MortalCombatXClient
 
         }
 
-        private void ExitGameButton_Click(object sender, RoutedEventArgs e)
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
+            LogoutButton.IsEnabled = false;
 
+            try
+            {
+                keepPolling = false;
+
+                await Task.Run(() => foob.Logout(Username));
+
+                Application.Current.Shutdown();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
+                LogoutButton.IsEnabled = true;
+            }
         }
 
         protected override void OnClosed(EventArgs e)
