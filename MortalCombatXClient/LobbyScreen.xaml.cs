@@ -32,24 +32,36 @@ namespace MortalCombatXClient
             Username = username;
             this.foob = foob;
 
-            // Start a background thread that periodically updates the list of lobbies
-            System.Threading.Thread pollThread = new System.Threading.Thread(() =>
+            // Start a background task that periodically updates the list of lobbies
+            Task.Run(async () =>
             {
                 while (keepPolling)
                 {
-                    List<Lobby> lobbies = foob.GetAllLobbies();
-
-                    // Update UI
-                    Dispatcher.Invoke(() =>
-                    {
-                       LobbyList.ItemsSource = lobbies.Select(lobby => lobby.LobbyName).ToList();     // Get every name from every lobby and make it a list item
-                    });
-
-                    System.Threading.Thread.Sleep(1000);     // Wait 1 second before the next list refresh
+                    await UpdateLobbyList();
+                    await Task.Delay(2000);     // Wait 2 seconds before the next list refresh
                 }
             });
-            pollThread.IsBackground = true;     // Allows thread to automatically stop when UI thread ends
-            pollThread.Start();
+        }
+
+        // Update UI to show list of lobby names and number of players in the lobby
+        private async Task UpdateLobbyList()
+        {
+            List<Lobby> lobbies = await Task.Run(() => foob.GetAllLobbies());
+            List<string> lobbyDisplayList = new List<string>();
+
+            foreach (var lobby in lobbies)
+            {
+                try
+                {
+                    List<Player> players = await Task.Run(() => foob.GetPlayersInLobby(lobby.LobbyName));
+                    lobbyDisplayList.Add($"| {lobby.LobbyName} | {players.Count} players |");
+                }
+                catch
+                {
+                    lobbyDisplayList.Add($"| {lobby.LobbyName} | 0 players | ");
+                }
+            }
+            Dispatcher.Invoke(() => LobbyList.ItemsSource = lobbyDisplayList);     // Display contents of lobbyDisplayList on the UI
         }
 
         private async void CreateLobbyButton_Click(object sender, RoutedEventArgs e)
@@ -64,6 +76,7 @@ namespace MortalCombatXClient
                     LoadingBar.Visibility = Visibility.Visible;
 
                     await Task.Run(() => foob.CreateLobby(lobbyName));
+                    await UpdateLobbyList();
                     CreatedLobbyName.Text = "";
                 }
                 catch(FaultException<LobbyExistsFault> ex)

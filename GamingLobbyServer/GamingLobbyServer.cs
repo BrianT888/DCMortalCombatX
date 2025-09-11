@@ -17,7 +17,6 @@ namespace GamingLobbyServer
         private DataServerInterface GetDataChannel()
         {
             ChannelFactory<DataServerInterface> factory = new ChannelFactory<DataServerInterface>(new NetTcpBinding(), "net.tcp://localhost:8100/DataService");
-
             return factory.CreateChannel();
         }
 
