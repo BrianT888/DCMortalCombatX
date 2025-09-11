@@ -69,26 +69,20 @@ namespace GamingLobbyServer
         // --- Lobby Management ---
         public bool CreateLobby(string lobbyName)
         {
-            try
-            {
-                DataServerInterface channel = GetDataChannel();
+            DataServerInterface channel = GetDataChannel();
 
-                // Check if lobby name already exists
-                List<Lobby> currentLobbies = channel.GetAllLobbies();
-                foreach (Lobby l in currentLobbies)
+            // Check if lobby name already exists
+            List<Lobby> currentLobbies = channel.GetAllLobbies();
+            foreach (Lobby l in currentLobbies)
+            {
+                if (l.LobbyName.ToLower() == lobbyName.ToLower())
                 {
-                    if (l.LobbyName.ToLower() == lobbyName.ToLower())
-                    {
-                        return false;     // Will change this to a custom exception that contains an infomartive message about the error
-                    }
+                    var fault = new LobbyExistsFault { Message = "That lobby name already exists." };
+                    throw new FaultException<LobbyExistsFault>(fault, new FaultReason(fault.Message));
                 }
+            }
 
-                return channel.CreateLobby(lobbyName);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
+            return channel.CreateLobby(lobbyName);
         }
 
         public bool DeleteLobby(string lobbyName)

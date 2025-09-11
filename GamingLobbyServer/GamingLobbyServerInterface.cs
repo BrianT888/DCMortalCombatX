@@ -26,6 +26,7 @@ namespace GamingLobbyServer
 
         // --- Lobby Management ---
         [OperationContract]
+        [FaultContract(typeof(LobbyExistsFault))]
         bool CreateLobby(string lobbyName);
 
         [OperationContract]

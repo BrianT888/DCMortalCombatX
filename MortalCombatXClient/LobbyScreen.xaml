@@ -47,12 +47,13 @@
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="10,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="380"/>
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="390,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="400"/>
         <TextBlock HorizontalAlignment="Left" Margin="400,28,0,0" TextWrapping="Wrap" Text="Lobby Menu" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
-        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="400,57,0,0" Width="375" Height="250" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Name="LobbyList"  Margin="400,57,0,0" Width="375" Height="250" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="112,146,0,0" TextWrapping="Wrap" Text="Enter Lobby Name" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Top"/>
         <TextBox x:Name="CreatedLobbyName" HorizontalAlignment="Left" Margin="112,167,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="176" Height="26"/>
+        <ProgressBar x:Name="LoadingBar" Width="120" Height="10" Margin="525,315,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
 
-        <Button Content="Join Lobby" Style="{StaticResource RoundedButtonStyle}" Click="JoinLobbyButton_Click" Margin="525,335,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Content="Create Lobby" Style="{StaticResource RoundedButtonStyle}" Click="CreateLobbyButton_Click" Margin="144,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Button Content="Exit Game" Style="{StaticResource RoundedButtonStyle}" Click="ExitGameButton_Click" Margin="20,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="JoinLobbyButton" Content="Join Lobby" Style="{StaticResource RoundedButtonStyle}" Click="JoinLobbyButton_Click" Margin="525,335,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="CreateLobbyButton" Content="Create Lobby" Style="{StaticResource RoundedButtonStyle}" Click="CreateLobbyButton_Click" Margin="144,210,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name="ExitGameButton" Content="Exit Game" Style="{StaticResource RoundedButtonStyle}" Click="ExitGameButton_Click" Margin="20,360,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>
