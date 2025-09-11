@@ -47,22 +47,37 @@ namespace MortalCombatXClient
             //brian - gonna stay empty for awhile  
         }
 
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
         {
-            keepPolling = false;
-            foob.Logout(username);
-            LoginScreen loginScreen = new LoginScreen();
-            loginScreen.Show();
-            this.Close();
+            try
+            {
+                keepPolling = false;
+                await Task.Run(() => foob.Logout(username));
+                LoginScreen loginScreen = new LoginScreen();
+                loginScreen.Show();
+                this.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
+            }
+
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        private async void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
         {
-            keepPolling = false;
-            foob.LeaveLobby(lobbyName, username);
-            LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
-            lobbyScreen.Show();
-            this.Close();
+            try
+            {
+                keepPolling = false;
+                await Task.Run(() => foob.LeaveLobby(lobbyName, username));
+                LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+                lobbyScreen.Show();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error leaving lobby: " + ex.Message, "Leave Lobby Error");
+            }
         }
 
         private async void SendMessageInLobbyButton_Click(object sender, RoutedEventArgs e)
@@ -70,7 +85,7 @@ namespace MortalCombatXClient
             string text = InputMessageTextBox.Text.Trim();
             if (!string.IsNullOrEmpty(username))
             {
-                foob.SendLobbyMessage(lobbyName, username, text);
+                await Task.Run(() => foob.SendLobbyMessage(lobbyName, username, text));
                 InputMessageTextBox.Clear();
                 await UpdateLobbyStats();
             }

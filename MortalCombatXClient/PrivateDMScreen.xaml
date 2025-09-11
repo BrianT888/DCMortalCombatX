@@ -76,7 +76,7 @@
             <ImageBrush ImageSource="/Images/InLobbywallpaper.jpg"/>
         </Grid.Background>
         <Rectangle HorizontalAlignment="Center" Height="376" Margin="0,27,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="670"/>
-        <TextBlock HorizontalAlignment="Left" Margin="192,30,0,0" TextWrapping="Wrap" Text="Name of Player you messaging" Foreground="White" FontSize="16" FontWeight="Medium" VerticalAlignment="Top"/>
+        <TextBlock x:Name="TargetPlayer" HorizontalAlignment="Left" Margin="192,30,0,0" TextWrapping="Wrap" Text="Name of Player you messaging" Foreground="White" FontSize="16" FontWeight="Medium" VerticalAlignment="Top"/>
         <ListBox Name="LobbyChatList" Margin="192,74,0,0" Width="442" Height="229" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="192,52,0,0" TextWrapping="Wrap" Text="Chat privately with this player" Foreground="White" FontSize="11" FontWeight="Medium" VerticalAlignment="Top"/>
         <TextBox x:Name="InputMessageTextBox" HorizontalAlignment="Left" Margin="192,317,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="390" Height="21"/>
