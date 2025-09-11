@@ -1,7 +1,6 @@
 ﻿using MortalCombatXLibrary;
 using System.Collections.Generic;
 using System.ServiceModel;
-using MortalCombatXLibrary;
 
 namespace GamingLobbyServer
 {
