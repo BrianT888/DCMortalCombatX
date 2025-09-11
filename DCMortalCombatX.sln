@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortalCombatXClient", "Mort
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortalCombatXData", "MortalCombatXData\MortalCombatXData.csproj", "{CCACC673-CA7B-4E15-BCDE-EFBFF87C09CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortalCombatXDuplexClient", "MortalCombatXDuplexClient\MortalCombatXDuplexClient.csproj", "{688F55B5-E9A1-48AE-9552-5A11C320B31C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{CCACC673-CA7B-4E15-BCDE-EFBFF87C09CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCACC673-CA7B-4E15-BCDE-EFBFF87C09CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCACC673-CA7B-4E15-BCDE-EFBFF87C09CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{688F55B5-E9A1-48AE-9552-5A11C320B31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{688F55B5-E9A1-48AE-9552-5A11C320B31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{688F55B5-E9A1-48AE-9552-5A11C320B31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{688F55B5-E9A1-48AE-9552-5A11C320B31C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
