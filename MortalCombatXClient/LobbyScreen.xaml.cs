@@ -98,7 +98,7 @@ namespace MortalCombatXClient
 
         private void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //join functionality
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
