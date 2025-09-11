@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GamingLobbyServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace MortalCombatXClient
     /// </summary>
     public partial class PrivateDMScreen : Window
     {
-        public PrivateDMScreen()
+        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
         }

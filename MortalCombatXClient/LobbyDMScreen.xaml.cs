@@ -40,6 +40,21 @@ namespace MortalCombatXClient
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
             //brian - gonna stay empty for awhile
+            if(PlayersInLobbyList.SelectedItem != null)
+            {
+                string selectedPlayer = PlayersInLobbyList.SelectedItem.ToString();
+                if(selectedPlayer == username)
+                {
+                    MessageBox.Show("You cannot DM yourself!", "Invalid Selection");
+                    return;
+                }
+                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob);
+                privateDMScreen.Show();
+            }
+            else
+            {
+                MessageBox.Show("Please select a player to DM.", "No Player Selected");
+            }
         }
 
         private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
