@@ -48,6 +48,8 @@ namespace MortalCombatXData
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
         bool PrivateMessage(string fromUser, string toUser, PlayerMessage message);
+        [OperationContract]
+        Queue<PlayerMessage> GetDMS(string user, string targetPlayer); 
 
         // --- File Sharing ---
         [OperationContract]

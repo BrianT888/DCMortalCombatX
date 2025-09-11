@@ -50,6 +50,8 @@ namespace GamingLobbyServer
 
         [OperationContract]
         bool SendPrivateMessage(string fromUser, string toUser, string message);
+        [OperationContract]
+        Queue<PlayerMessage> GetDMS(string user, string targetPlayer);
 
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);

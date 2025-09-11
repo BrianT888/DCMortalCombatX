@@ -39,7 +39,6 @@ namespace MortalCombatXClient
 
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            //brian - gonna stay empty for awhile
             if(PlayersInLobbyList.SelectedItem != null)
             {
                 string selectedPlayer = PlayersInLobbyList.SelectedItem.ToString();

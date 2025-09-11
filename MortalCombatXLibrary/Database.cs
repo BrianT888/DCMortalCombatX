@@ -94,5 +94,16 @@ namespace MortalCombatXLibrary
             return null;
         }
 
+        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - added this to get dms of a player, returning queue instead of list since i swear we don't need to .ToList() everything like the above no?
+        {
+            if (Players.TryGetValue(user, out Player player))
+            {
+                if (player.dms.TryGetValue(targetPlayer, out Queue<PlayerMessage> messages))
+                {
+                    return messages;
+                }
+            }
+            return null;
+        }
     }
 }

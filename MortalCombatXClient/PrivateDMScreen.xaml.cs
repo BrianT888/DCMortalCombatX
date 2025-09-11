@@ -20,9 +20,20 @@ namespace MortalCombatXClient
     /// </summary>
     public partial class PrivateDMScreen : Window
     {
+        private GamingLobbyServerInterface foob;
+        private string username;
+        private string targetPlayer;
+        private bool keepPolling = true;
         public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
+            this.username = username;
+            this.targetPlayer = targetPlayer;
+            this.foob = foob;
+
+            TargetPlayer.Text = targetPlayer;
+
+            Polling();
         }
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -37,6 +48,19 @@ namespace MortalCombatXClient
         private void SendDMButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private async Task UpdateDMStats()
+        {
+
+        }
+        private async void Polling()//brian - my version of ur polling system
+        {
+            while (keepPolling)
+            {
+                await UpdateDMStats();
+                await Task.Delay(2000);
+            }
         }
     }
 }

@@ -182,6 +182,18 @@ namespace GamingLobbyServer
             }
         }
 
+        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)
+        {
+            try
+            {
+                return foob.GetDMS(user, targetPlayer);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
         public List<PlayerMessage> GetLobbyMessages(string lobbyName)
         {
             try
