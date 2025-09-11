@@ -1,4 +1,5 @@
 ﻿using GamingLobbyServer;
+using MortalCombatXLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,16 @@ namespace MortalCombatXClient
 
         private async Task UpdateDMStats()
         {
+            Queue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));
+            List<string> dmDisplayList = new List<string>();
 
+            foreach (PlayerMessage dm in dms)
+            {
+                string text = dm.Sender.ToString() + ": " + dm.Content;
+                dmDisplayList.Add(text);
+            }
+
+            Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
         }
         private async void Polling()//brian - my version of ur polling system
         {
