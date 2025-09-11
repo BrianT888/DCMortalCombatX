@@ -105,5 +105,22 @@ namespace MortalCombatXLibrary
             }
             return null;
         }
+
+        public void sendPrivateDM(string user, string targetPlayer, PlayerMessage dm)
+        {
+            if (Players.TryGetValue(user, out Player player))
+            {
+                if (player.dms.TryGetValue(targetPlayer, out Queue<PlayerMessage> messages))
+                {
+                    messages.Enqueue(dm);
+                }
+                else//brian - if we haven't dm'd this player before, create new msg history for them
+                {
+                    Queue<PlayerMessage> newQueue = new Queue<PlayerMessage>();
+                    newQueue.Enqueue(dm);
+                    player.dms.Add(targetPlayer, newQueue);
+                }
+            }
+        }
     }
 }

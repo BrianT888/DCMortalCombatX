@@ -169,12 +169,13 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateMessage(string fromUser, string toUser, string message)     // not done
+        public bool SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
         {
             try
             {
-                //brian- imma just leave this since u said it ain't done yet
-                return false;
+                foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
+                foob.SendPrivateDM(targetPlayer, user, new PlayerMessage { Sender = user, Content = message });//brian - run it twice so both players got the msg history
+                return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
             {
@@ -182,7 +183,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)
+        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
         {
             try
             {

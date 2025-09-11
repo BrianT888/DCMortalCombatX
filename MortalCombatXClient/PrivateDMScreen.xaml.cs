@@ -28,6 +28,9 @@ namespace MortalCombatXClient
         LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm 
         //brian - though i believe if we have multiple private dms open i don't think logging out from one will close the others
         //brian - but i think we can do a reverse method, where if this lobbydm is closed, it will close all private dms that are holding this object?
+
+
+        //brian - ok we just now need like polling to check whether a new dm has been sent, so we can auto open a new window on target client to private dms
         public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen)
         {
             InitializeComponent();
@@ -57,7 +60,7 @@ namespace MortalCombatXClient
             }
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - i think returning from a private dm should just close the window nothing else
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - i think returning from a private dm should just close the window nothing else so no need for async since not using foob?
         {
             try
             {
@@ -70,9 +73,23 @@ namespace MortalCombatXClient
             }
         }
 
-        private void SendDMButton_Click(object sender, RoutedEventArgs e)
+        private async void SendDMButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                string text = InputMessageTextBox.Text.Trim();
 
+                if (!string.IsNullOrEmpty(text))
+                {
+                    await Task.Run(() => foob.SendPrivateDM(username, targetPlayer, text));
+                    InputMessageTextBox.Clear();
+                    await UpdateDMStats();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error sending DM: " + ex.Message, "Send DM Error");
+            }
         }
 
         private async Task UpdateDMStats()

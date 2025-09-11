@@ -49,7 +49,7 @@ namespace GamingLobbyServer
         bool SendLobbyMessage(string lobbyName, string username, string message);
 
         [OperationContract]
-        bool SendPrivateMessage(string fromUser, string toUser, string message);
+        bool SendPrivateDM(string user, string targetPlayer, string message);
         [OperationContract]
         Queue<PlayerMessage> GetDMS(string user, string targetPlayer);
 

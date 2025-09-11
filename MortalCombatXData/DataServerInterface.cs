@@ -47,7 +47,7 @@ namespace MortalCombatXData
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
-        bool PrivateMessage(string fromUser, string toUser, PlayerMessage message);
+        bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message);
         [OperationContract]
         Queue<PlayerMessage> GetDMS(string user, string targetPlayer); 
 

@@ -85,8 +85,9 @@ namespace MortalCombatXData
             return db.GetLobbyMessages(lobbyName);
         }
 
-        public bool PrivateMessage(string from, string to, PlayerMessage message)     // *** TEMPORARY
+        public bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message)//brian - need quality check
         {
+            db.sendPrivateDM(user, targetPlayer, message);
             return true;
         }
 
