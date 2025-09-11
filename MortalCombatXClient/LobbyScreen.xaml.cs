@@ -96,9 +96,31 @@ namespace MortalCombatXClient
             }
         }
 
-        private void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
+        private async void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
         {
-            //join functionality
+            if (LobbyList.SelectedItem != null)
+            {
+                try
+                {
+                    // Get the lobby name from the selected string in the UI ListBox (format = "| LobbyName | X players |")
+                    string selectedText = LobbyList.SelectedItem.ToString();
+                    string lobbyName = selectedText.Split('|')[1].Trim();
+
+                    await Task.Run(() => foob.JoinLobby(lobbyName, Username));
+                    keepPolling = false;
+                    LobbyDMScreen lobbyDMScreen = new LobbyDMScreen(Username, lobbyName, foob);
+                    lobbyDMScreen.Show();
+                    this.Close();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Error joining lobby: " + ex.Message);   
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a lobby to join.");
+            }
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
