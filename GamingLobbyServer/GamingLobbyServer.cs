@@ -12,7 +12,7 @@ namespace GamingLobbyServer
     public class GamingLobbyServer : GamingLobbyServerInterface
     {
         private DataServerInterface foob;
-        uint LogNumber = 0; //brian - just incase we wanted to do the log thing and keep track of stuff imma keep this here, if not we can remove it later
+        uint LogNumber = 0;
 
         public GamingLobbyServer()
         {
@@ -26,6 +26,7 @@ namespace GamingLobbyServer
             return factory.CreateChannel();
         }
 
+        // Logs changes to data
         [MethodImpl(MethodImplOptions.Synchronized)]
         private void Log(string message)
         {
