@@ -96,6 +96,7 @@ namespace MortalCombatXClient
             }
         }
 
+        // Puts user into selected lobby
         private async void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
         {
             if (LobbyList.SelectedItem != null)
@@ -108,6 +109,8 @@ namespace MortalCombatXClient
 
                     await Task.Run(() => foob.JoinLobby(lobbyName, Username));
                     keepPolling = false;
+
+                    // Go to LobbyDMScreen
                     LobbyDMScreen lobbyDMScreen = new LobbyDMScreen(Username, lobbyName, foob);
                     lobbyDMScreen.Show();
                     this.Close();
