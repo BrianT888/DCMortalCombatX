@@ -77,11 +77,11 @@
         </Grid.Background>
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="10,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="380"/>
         <Rectangle HorizontalAlignment="Left" Height="382" Margin="390,21,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="400"/>
-        <TextBlock HorizontalAlignment="Left" Margin="25,21,0,0" TextWrapping="Wrap" Text="Lobby: (the name)" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
-        <ListBox Name="LobbyChatList" Margin="25,45,0,0" Width="499" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <ListBox Name="PlayersInLobbyList" Margin="584,89,0,0" Width="168" Height="153" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBlock x:Name="LobbyNameTitle" HorizontalAlignment="Left" Margin="25,21,0,0" TextWrapping="Wrap" Text="Lobby: (the name)" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
+        <ListBox x:Name="LobbyChatList" Margin="25,45,0,0" Width="499" Height="253" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ListBox x:Name="PlayersInLobbyList" Margin="584,89,0,0" Width="168" Height="153" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="592,287,0,0" TextWrapping="Wrap" Text="Private Message Selected Player" Foreground="White" FontSize="11" FontWeight="Medium" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="584,60,0,0" TextWrapping="Wrap" Text="Player Count: (x/y)" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
+        <TextBlock x:Name="PlayerCounter" HorizontalAlignment="Left" Margin="584,60,0,0" TextWrapping="Wrap" Text="Player Count: (x/y)" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
         <TextBox x:Name="InputMessageTextBox" HorizontalAlignment="Left" Margin="25,313,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="400" Height="21"/>
         <ProgressBar x:Name="LoadingBar" Width="120" Height="10" Margin="525,315,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
 

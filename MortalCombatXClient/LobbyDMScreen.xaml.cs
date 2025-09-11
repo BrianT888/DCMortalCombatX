@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GamingLobbyServer;
+using MortalCombatXLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -19,34 +22,99 @@ namespace MortalCombatXClient
     /// </summary>
     public partial class LobbyDMScreen : Window
     {
-        public LobbyDMScreen()
+        private GamingLobbyServerInterface foob;//brian - im just keeping the same style as you did for the previous screen
+        private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
+        private string lobbyName;
+        private bool keepPolling = true;
+        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
+            this.username = username;
+            this.lobbyName = lobbyName;
+            this.foob = foob;
+
+            LobbyNameTitle.Text = lobbyName;
+            Polling();
         }
 
-        private void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
+        private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //brian - gonna stay empty for awhile
         }
 
-        private void ShareFileButton_Click(object sender, RoutedEventArgs e)
+        private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
         {
-
+            //brian - gonna stay empty for awhile  
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-
+            keepPolling = false;
+            foob.Logout(username);
+            LoginScreen loginScreen = new LoginScreen();
+            loginScreen.Show();
+            this.Close();
         }
 
         private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
-            // return back to the lobby screen
+            keepPolling = false;
+            foob.LeaveLobby(lobbyName, username);
+            LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+            lobbyScreen.Show();
+            this.Close();
         }
 
-        private void SendMessageInLobbyButton_Click(object sender, RoutedEventArgs e)
+        private async void SendMessageInLobbyButton_Click(object sender, RoutedEventArgs e)
         {
+            string text = InputMessageTextBox.Text.Trim();
+            if (!string.IsNullOrEmpty(username))
+            {
+                foob.SendLobbyMessage(lobbyName, username, text);
+                InputMessageTextBox.Clear();
+                await UpdateLobbyStats();
+            }
+        }
 
+        private async Task UpdateLobbyStats()
+        {
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
+            List<string> displayMessages = new List<string>();
+            List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
+            List<string> displayPlayers = new List<string>();
+
+            foreach (Player p in playersInLobby)
+            {
+                displayPlayers.Add(p.Username);
+            }
+
+            foreach (PlayerMessage msg in lobbyMessages)//brian - for each message we extract sender and content and format it to display
+            {
+                string text = msg.Sender + ": " + msg.Content;
+                displayMessages.Add(text);
+            }
+
+            //brian - diff thread currently, use dispatcher to update ui lists
+            Dispatcher.Invoke(() => 
+            {
+                LobbyChatList.ItemsSource = displayMessages; 
+                PlayersInLobbyList.ItemsSource = displayPlayers;
+                PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
+            });
+        }
+
+        private async void Polling()//brian - my version of ur polling system
+        {
+            while (keepPolling)
+            {
+                await UpdateLobbyStats();
+                await Task.Delay(2000);
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
+        {
+            keepPolling = false;
         }
     }
 }

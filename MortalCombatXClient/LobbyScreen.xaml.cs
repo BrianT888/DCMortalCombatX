@@ -31,6 +31,8 @@ namespace MortalCombatXClient
             InitializeComponent();
             Username = username;
             this.foob = foob;
+            
+            UsernameTitle.Text = username;
 
             // Start a background task that periodically updates the list of lobbies
             Task.Run(async () =>
