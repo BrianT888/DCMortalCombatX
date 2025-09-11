@@ -22,30 +22,20 @@ namespace GamingLobbyServer
         // --- Player Management ---
         public bool Login(string username)
         {
-            try
-            {
-                DataServerInterface channel = GetDataChannel();
+            DataServerInterface channel = GetDataChannel();
 
-                // Check if username already exists
-                List<Player> currentPlayers = channel.GetAllPlayers();
-                foreach (Player p in currentPlayers)
+            // Check if username already exists
+            List<Player> currentPlayers = channel.GetAllPlayers();
+            foreach (Player p in currentPlayers)
+            {
+                if (p.Username.ToLower() == username.ToLower())     
                 {
-                    if (p.Username.ToLower() == username.ToLower())
-                    {
-                        throw new FaultException("Username already exists");     // Will change this to a custom exception that contains an infomartive message about the error
-                    }
+                    var fault = new UsernameExistsFault { Message = "That username is already taken." };
+                    throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
                 }
+            }
 
-                return channel.AddNewPlayer(username);
-            }
-            catch (FaultException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();  //temp
-            }
+            return channel.AddNewPlayer(username);         
         }
 
         public bool Logout(string username)

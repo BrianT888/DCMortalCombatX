@@ -112,6 +112,10 @@
       <Project>{d0604b58-628c-429e-a3b5-1da27e112548}</Project>
       <Name>GamingLobbyServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MortalCombatXLibrary\MortalCombatXLibrary.csproj">
+      <Project>{54ef23a3-445e-4cee-b284-0e100136d7a9}</Project>
+      <Name>MortalCombatXLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

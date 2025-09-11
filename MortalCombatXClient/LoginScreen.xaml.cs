@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using GamingLobbyServer;
 using System.Threading.Tasks;
+using MortalCombatXLibrary;
 
 namespace MortalCombatXClient
 {
@@ -47,9 +48,9 @@ namespace MortalCombatXClient
                     lobbyScreen.Show();
                     this.Close();
                 }
-                catch(FaultException ex) 
+                catch(FaultException<UsernameExistsFault> ex) 
                 {
-                    MessageBox.Show(ex.Message);
+                    MessageBox.Show(ex.Detail.Message, "Login Error");
                     LoginButton.IsEnabled = true;
                 }
             }

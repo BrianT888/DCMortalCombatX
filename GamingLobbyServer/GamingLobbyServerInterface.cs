@@ -1,6 +1,7 @@
 ﻿using MortalCombatXLibrary;
 using System.Collections.Generic;
 using System.ServiceModel;
+using MortalCombatXLibrary;
 
 namespace GamingLobbyServer
 {
@@ -13,33 +14,46 @@ namespace GamingLobbyServer
 
         // --- Player Management --- 
         [OperationContract]
+        [FaultContract(typeof(UsernameExistsFault))]
         bool Login(string username);
+
         [OperationContract]
         bool Logout(string username);
+
         [OperationContract]
         List<Player> GetAllPlayers();
+
 
         // --- Lobby Management ---
         [OperationContract]
         bool CreateLobby(string lobbyName);
+
         [OperationContract]
         bool DeleteLobby(string lobbyName);
+
         [OperationContract]
         bool JoinLobby(string lobbyName, string username);
+
         [OperationContract]
         bool LeaveLobby(string lobbyName, string username);
+
         [OperationContract]
         List<Lobby> GetAllLobbies();
+
         [OperationContract]
         List<Player> GetPlayersInLobby(string lobbyName);
+
 
         // --- Message Management ---
         [OperationContract]
         bool SendLobbyMessage(string lobbyName, string username, string message);
+
         [OperationContract]
         bool SendPrivateMessage(string fromUser, string toUser, string message);
+
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
+
 
         // --- File Sharing ---
         [OperationContract]
