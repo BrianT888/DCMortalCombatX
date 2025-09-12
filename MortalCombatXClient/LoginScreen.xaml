@@ -15,6 +15,8 @@
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="35"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -44,10 +46,8 @@
         </Grid.Background>
         <TextBlock HorizontalAlignment="Left" Margin="98,202,0,0" TextWrapping="Wrap" Text="Username" Foreground="Black" FontSize="12" FontWeight="Medium" VerticalAlignment="Top"/>
         <TextBox x:Name="EnteredText" HorizontalAlignment="Left" Margin="98,217,0,0" TextWrapping="Wrap" Text=" " VerticalAlignment="Top" Width="212" Background="Lavender" Height="27"/>
-        <Border BorderBrush="#FF000000" BorderThickness="1.2" CornerRadius="12" Background="MediumSlateBlue" 
-            Margin="160,270,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Button Name="LoginButton" Content="Login" Style="{StaticResource RoundedButtonStyle}" Background="Transparent" Width="80" Height="25" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LoginButton_Click"/>
-        </Border>
+        <Button Name="LoginButton" Content="Join Lobby" Style="{StaticResource RoundedButtonStyle}" Click="LoginButton_Click" Margin="147,266,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="114"/>
+        <Button Name="ExitToDesktopButton" Content="Exit To Desktop" Style="{StaticResource RoundedButtonStyle}" Click="ExitToDesktopButton_Click" Margin="10,378,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="114"/>
         <ProgressBar x:Name="LoadingBar" Width="80" Height="10" Margin="160,252,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
 
     </Grid>
