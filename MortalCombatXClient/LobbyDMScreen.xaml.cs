@@ -33,6 +33,8 @@ namespace MortalCombatXClient
             this.lobbyName = lobbyName;
             this.foob = foob;
 
+            UsernameTitle.Text = username;
+
             LobbyNameTitle.Text = lobbyName;
             Polling();
         }

@@ -84,11 +84,13 @@
         <TextBlock x:Name="PlayerCounter" HorizontalAlignment="Left" Margin="584,60,0,0" TextWrapping="Wrap" Text="Player Count: (x/y)" Foreground="White" FontSize="18" FontWeight="Medium" VerticalAlignment="Top"/>
         <TextBox x:Name="InputMessageTextBox" HorizontalAlignment="Left" Margin="25,313,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="400" Height="21"/>
         <ProgressBar x:Name="LoadingBar" Width="120" Height="10" Margin="525,315,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
+        <TextBlock x:Name="UsernameTitle" HorizontalAlignment="Left" Margin="668,25,0,0" TextWrapping="Wrap" Text="Entered Username" Foreground="White" FontSize="14" FontWeight="Medium" VerticalAlignment="Top"/>
 
         <Button Name="PrivateDMPlayerButton" Content="Message Player" Style="{StaticResource RoundedButtonStyle}" Click="PrivateDMPlayerButton_Click" Margin="605,255,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="126" Height="23"/>
         <Button Name="ShareFileButton" Content="Share" Style="{StaticResource NotRoundButtonStyle}" Click="ShareFileButton_Click" Margin="421,313,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="21" Width="53"/>
         <Button Name="LogoutButton" Content="Logout" Style="{StaticResource RoundedButtonStyle}" Click="LogoutButton_Click" Margin="702,373,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="82"/>
         <Button Name="ReturnToLobbyScreen" Content="Return" Style="{StaticResource RoundedButtonStyle}" Click="ReturnButton_Click" Margin="17,373,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="82"/>
         <Button x:Name="SendMessageInLobbyButton" Content="Send" Style="{StaticResource NotRoundButtonStyle}" Click="SendMessageInLobbyButton_Click" Margin="471,313,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="21" Width="53"/>
+        <Image HorizontalAlignment="Left" Height="23" Margin="641,23,0,0" VerticalAlignment="Top" Width="22" Source="/Images/defaultProfilePic.jpg"/>
     </Grid>
 </Window>

@@ -39,6 +39,8 @@ namespace MortalCombatXClient
             this.foob = foob;
             this.lobbyDMScreen = lobbyDMScreen;
 
+            UsernameTitle.Text = username;
+
             TargetPlayer.Text = targetPlayer;
 
             Polling();
