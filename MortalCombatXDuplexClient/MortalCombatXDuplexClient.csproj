@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,20 +56,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LobbyDMScreen.xaml.cs">
+      <DependentUpon>LobbyDMScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LobbyScreen.xaml.cs">
+      <DependentUpon>LobbyScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoginScreen.xaml.cs">
+      <DependentUpon>LoginScreen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrivateDMScreen.xaml.cs">
+      <DependentUpon>PrivateDMScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,6 +98,46 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="LobbyDMScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LobbyScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LoginScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PrivateDMScreen.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GamingLobbyServer\GamingLobbyServer.csproj">
+      <Project>{d0604b58-628c-429e-a3b5-1da27e112548}</Project>
+      <Name>GamingLobbyServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MortalCombatXLibrary\MortalCombatXLibrary.csproj">
+      <Project>{54ef23a3-445e-4cee-b284-0e100136d7a9}</Project>
+      <Name>MortalCombatXLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\defaultProfilePic.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\InLobbywallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\lobbywallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\mortalkombatwallpaper.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
