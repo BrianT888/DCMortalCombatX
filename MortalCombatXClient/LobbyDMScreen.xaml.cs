@@ -29,7 +29,6 @@ namespace MortalCombatXClient
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
-        //private Dictionary<string, (string extension, string data)> sharedFiles = new Dictionary<string, (string, string)> ();
         public class ChatMessage
         {
             public string DisplayText { get; set; }
@@ -123,7 +122,6 @@ namespace MortalCombatXClient
         private async Task UpdateLobbyStats()
         {
             List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
-            // List<string> displayMessages = new List<string>();
             List<ChatMessage> displayMessagesWithFiles = new List<ChatMessage>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -145,13 +143,6 @@ namespace MortalCombatXClient
                         string fileName = parts[1];
                         string fileExt = parts[2];
                         string fileData = parts[3];
-
-                        //// toma- added a sharedFiles Dictionary to store files 
-                        //// nvm this dont work bru
-                        //if (!sharedFiles.ContainsKey(fileName))
-                        //{
-                        //    sharedFiles[fileName] = (fileExt, fileData);
-                        //}
 
                         displayMessagesWithFiles.Add(new ChatMessage
                         {
@@ -241,34 +232,6 @@ namespace MortalCombatXClient
                 MessageBox.Show($"Error opening file: {ex.Message}");
             }
         }
-
-        //private async Task UpdateLobbyStats()
-        //{
-        //    List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?, also randomly just got a communcation fault on GetLobbyMsgs, but i think thats cause smt else died shouldn't happen normally?
-        //    List<string> displayMessages = new List<string>();
-        //    List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
-        //    List<string> displayPlayers = new List<string>();
-
-        //    foreach (Player p in playersInLobby)
-        //    {
-        //        displayPlayers.Add(p.Username);
-        //    }
-
-        //    foreach (PlayerMessage msg in lobbyMessages)//brian - for each message we extract sender and content and format it to display
-        //    {
-        //        string text = msg.Sender + ": " + msg.Content;
-        //        displayMessages.Add(text);
-        //    }
-
-        //    //brian - diff thread currently, use dispatcher to update ui lists
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        LobbyChatList.ItemsSource = displayMessages;
-        //        PlayersInLobbyList.ItemsSource = displayPlayers;
-        //        PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
-        //    });
-        //}
-
 
         private async void Polling()//brian - my version of ur polling system
         {
