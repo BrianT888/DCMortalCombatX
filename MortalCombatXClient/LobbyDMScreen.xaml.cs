@@ -1,4 +1,5 @@
 ﻿using GamingLobbyServer;
+using Microsoft.Win32;
 using MortalCombatXLibrary;
 using System;
 using System.Collections.Generic;
@@ -58,9 +59,27 @@ namespace MortalCombatXClient
             }
         }
 
+        //private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //brian - gonna stay empty for awhile  
+        //}
+
         private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
         {
-            //brian - gonna stay empty for awhile  
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Allowed files|*.txt;*.png;*.jpg";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string selectedFile = openFileDialog.FileName;
+                string fileName = System.IO.Path.GetFileName(selectedFile);
+
+                if (!string.IsNullOrEmpty(username))
+                {
+                    await Task.Run(() => foob.SendLobbyMessage(lobbyName, username, $"Shared file: {fileName}"));
+                    await UpdateLobbyStats();
+                }
+            }
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
