@@ -15,6 +15,8 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+using System.IO.IsolatedStorage;
 
 namespace MortalCombatXClient
 {
@@ -27,6 +29,15 @@ namespace MortalCombatXClient
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
+        //private Dictionary<string, (string extension, string data)> sharedFiles = new Dictionary<string, (string, string)> ();
+        public class ChatMessage
+        {
+            public string DisplayText { get; set; }
+            public bool IsFile { get; set; }
+            public string FileName { get; set; }
+            public string FileExtension { get; set; } //.jpg.txt etc
+            public string FileData { get; set; }
+        }
         public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
@@ -53,9 +64,13 @@ namespace MortalCombatXClient
                 string selectedFile = openFileDialog.FileName;
                 string fileName = System.IO.Path.GetFileName(selectedFile);
 
+                byte[] fileBytes = File.ReadAllBytes(selectedFile);
+                string fileData = Convert.ToBase64String(fileBytes);
+                string fileExt = System.IO.Path.GetExtension(selectedFile); // includes the dot, e.g., .txt, .png
+
                 if (!string.IsNullOrEmpty(username))
                 {
-                    await Task.Run(() => foob.SendLobbyMessage(lobbyName, username, $"Shared file: {fileName}"));
+                    await Task.Run(() => foob.SendLobbyMessage(lobbyName, username, $"FILE|{fileName}|{fileExt}|{fileData}"));
                     await UpdateLobbyStats();
                 }
             }
@@ -108,7 +123,8 @@ namespace MortalCombatXClient
         private async Task UpdateLobbyStats()
         {
             List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
-            List<string> displayMessages = new List<string>();
+            // List<string> displayMessages = new List<string>();
+            List<ChatMessage> displayMessagesWithFiles = new List<ChatMessage>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
 
@@ -119,18 +135,140 @@ namespace MortalCombatXClient
 
             foreach (PlayerMessage msg in lobbyMessages)//brian - for each message we extract sender and content and format it to display
             {
-                string text = msg.Sender + ": " + msg.Content;
-                displayMessages.Add(text);
+                // toma = im gonna make it so that it checks if its a shared FILE message
+
+                if (msg.Content.StartsWith("FILE|"))
+                {
+                    string[] parts = msg.Content.Split('|');
+                    if (parts.Length == 4) // FILE|name|.jpg|base64data
+                    {
+                        string fileName = parts[1];
+                        string fileExt = parts[2];
+                        string fileData = parts[3];
+
+                        //// toma- added a sharedFiles Dictionary to store files 
+                        //// nvm this dont work bru
+                        //if (!sharedFiles.ContainsKey(fileName))
+                        //{
+                        //    sharedFiles[fileName] = (fileExt, fileData);
+                        //}
+
+                        displayMessagesWithFiles.Add(new ChatMessage
+                        {
+                            DisplayText = $"{msg.Sender}: Shared file:",
+                            IsFile = true, // for the button visibility
+                            FileName = fileName,
+                            FileExtension = fileExt,
+                            FileData = fileData
+                        });
+                    }
+                }
+                else
+                {
+                    // Regular message
+                    displayMessagesWithFiles.Add(new ChatMessage
+                    {
+                        DisplayText = $"{msg.Sender}: {msg.Content}",
+                        IsFile = false
+                    });
+                }
+
             }
 
             //brian - diff thread currently, use dispatcher to update ui lists
-            Dispatcher.Invoke(() => 
+            Dispatcher.Invoke(() =>
             {
-                LobbyChatList.ItemsSource = displayMessages; 
+                LobbyChatList.ItemsSource = displayMessagesWithFiles;
                 PlayersInLobbyList.ItemsSource = displayPlayers;
                 PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
             });
         }
+
+        private void ViewFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            ChatMessage chatMessage = button.Tag as ChatMessage;
+
+            if (chatMessage != null && chatMessage.IsFile)
+            {
+                OpenFileViewer(chatMessage.FileName, chatMessage.FileExtension, chatMessage.FileData);
+            }
+        }
+
+        private void OpenFileViewer(string fileName, string fileExt, string fileData)
+        {
+            Window viewerWindow = new Window();
+            viewerWindow.Title = fileName;
+            viewerWindow.Width = 500;
+            viewerWindow.Height = 500;
+
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(fileData);
+
+                if (fileExt == ".txt")
+                {
+                    // Text file viewer
+                    TextBox textBox = new TextBox();
+                    textBox.Text = Encoding.UTF8.GetString(bytes);
+                    textBox.IsReadOnly = true;
+                    textBox.TextWrapping = TextWrapping.Wrap;
+                    textBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                    viewerWindow.Content = textBox;
+                }
+                else if (fileExt == ".jpg" || fileExt == ".png")
+                {
+                    // Image file viewer
+                    Image image = new Image();
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit(); // tells wpf its going to initialise since BitMapInage freezes
+                    bitmap.StreamSource = new MemoryStream(bytes);
+                    bitmap.EndInit();
+                    image.Source = bitmap;
+                    image.Stretch = Stretch.Uniform; // This keeps aspect ratio
+                    viewerWindow.Content = image;
+                }
+                else
+                {
+                    MessageBox.Show($"Unsupported file type: {fileExt}");
+                    return;
+                }
+
+                viewerWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening file: {ex.Message}");
+            }
+        }
+
+        //private async Task UpdateLobbyStats()
+        //{
+        //    List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?, also randomly just got a communcation fault on GetLobbyMsgs, but i think thats cause smt else died shouldn't happen normally?
+        //    List<string> displayMessages = new List<string>();
+        //    List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
+        //    List<string> displayPlayers = new List<string>();
+
+        //    foreach (Player p in playersInLobby)
+        //    {
+        //        displayPlayers.Add(p.Username);
+        //    }
+
+        //    foreach (PlayerMessage msg in lobbyMessages)//brian - for each message we extract sender and content and format it to display
+        //    {
+        //        string text = msg.Sender + ": " + msg.Content;
+        //        displayMessages.Add(text);
+        //    }
+
+        //    //brian - diff thread currently, use dispatcher to update ui lists
+        //    Dispatcher.Invoke(() =>
+        //    {
+        //        LobbyChatList.ItemsSource = displayMessages;
+        //        PlayersInLobbyList.ItemsSource = displayPlayers;
+        //        PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
+        //    });
+        //}
+
 
         private async void Polling()//brian - my version of ur polling system
         {
