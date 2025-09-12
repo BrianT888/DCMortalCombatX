@@ -60,7 +60,11 @@ namespace MortalCombatXClient
             {
                 MessageBox.Show("Enter username");
             }
+        }
 
+        private void ExitToDesktopButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

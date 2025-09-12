@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace MortalCombatXData
 {
@@ -26,6 +27,8 @@ namespace MortalCombatXData
         bool RemovePlayer(string username);
         [OperationContract]
         List<Player> GetAllPlayers();
+        [OperationContract]
+        Player GetPlayer(string username);
 
         // --- Lobby Management ---
         [OperationContract]
@@ -47,8 +50,15 @@ namespace MortalCombatXData
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
-        bool PrivateMessage(string fromUser, string toUser, PlayerMessage message);
-
+        bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message);
+        [OperationContract]
+        ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
+        [OperationContract]
+        bool CheckNewDM(string user);
+        [OperationContract]
+        void SetDMFlag(string user, bool flag);
+        [OperationContract]
+        string GetLastDMFrom(string target);
         // --- File Sharing ---
         [OperationContract]
         bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else

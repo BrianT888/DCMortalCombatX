@@ -31,6 +31,8 @@ namespace MortalCombatXClient
             InitializeComponent();
             Username = username;
             this.foob = foob;
+            
+            UsernameTitle.Text = username;
 
             // Start a background task that periodically updates the list of lobbies
             Task.Run(async () =>
@@ -96,14 +98,39 @@ namespace MortalCombatXClient
             }
         }
 
-        private void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
+        // Puts user into selected lobby
+        private async void JoinLobbyButton_Click(object sender, RoutedEventArgs e)
         {
+            if (LobbyList.SelectedItem != null)
+            {
+                try
+                {
+                    // Get the lobby name from the selected string in the UI ListBox (format = "| LobbyName | X players |")
+                    string selectedText = LobbyList.SelectedItem.ToString();
+                    string lobbyName = selectedText.Split('|')[1].Trim();
 
+                    await Task.Run(() => foob.JoinLobby(lobbyName, Username));
+                    keepPolling = false;
+
+                    // Go to LobbyDMScreen
+                    LobbyDMScreen lobbyDMScreen = new LobbyDMScreen(Username, lobbyName, foob);
+                    lobbyDMScreen.Show();
+                    this.Close();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Error joining lobby: " + ex.Message);   
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a lobby to join.");
+            }
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LogoutButton.IsEnabled = false;
+            LogoutButton.IsEnabled = false;//brian - is this necessary? in my one for LobbyDMScreen i don't even both with isEnabled for the button, i swear its instantaneous
 
             try
             {

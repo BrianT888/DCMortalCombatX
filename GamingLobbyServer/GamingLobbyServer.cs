@@ -5,6 +5,9 @@ using MortalCombatXData;
 using System.ServiceModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace GamingLobbyServer
 {
@@ -71,6 +74,18 @@ namespace GamingLobbyServer
             try
             {
                 return foob.GetAllPlayers();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public Player GetPlayer(string username)
+        {
+            try
+            {
+                return foob.GetPlayer(username);
             }
             catch (Exception ex)
             {
@@ -169,12 +184,24 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateMessage(string fromUser, string toUser, string message)     // not done
+        public bool SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
         {
             try
             {
-                //brian- imma just leave this since u said it ain't done yet
-                return false;
+                foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
+                return true;//brian - lowk idk what to do this this return value lol
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
+        {
+            try
+            {
+                return foob.GetDMS(user, targetPlayer);
             }
             catch (Exception ex)
             {
@@ -194,6 +221,41 @@ namespace GamingLobbyServer
             }
         }
 
+        public bool CheckNewDM(string user)//brian - still need to quality check
+        {
+            try
+            {
+                return foob.CheckNewDM(user);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public void SetDMFlag(string user, bool flag)//brian - still need to quality check
+        {
+            try
+            {
+                foob.SetDMFlag(user, flag);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public string GetLastDMFrom(string user)//brian - still need to quality check
+        {
+            try
+            {
+                return foob.GetPlayer(user).lastDMFrom;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
 
         // --- File Sharing ---
         public bool GetSharedFiles(string lobbyName)     // not done

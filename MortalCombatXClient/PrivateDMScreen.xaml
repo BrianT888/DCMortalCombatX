@@ -1,0 +1,92 @@
+﻿<Window x:Class="MortalCombatXClient.PrivateDMScreen"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MortalCombatXClient"
+        mc:Ignorable="d"
+        Title="PrivateDMScreen" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF5A3EBD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF4B2FA5"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NotRoundButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="MediumSlateBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderBrush" Value="DarkGray"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF5A3EBD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF4B2FA5"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/InLobbywallpaper.jpg"/>
+        </Grid.Background>
+        <Rectangle HorizontalAlignment="Center" Height="376" Margin="0,27,0,0" Fill="Black" Opacity="0.9" Stroke="Black" VerticalAlignment="Top" Width="670"/>
+        <TextBlock x:Name="TargetPlayer" HorizontalAlignment="Left" Margin="192,30,0,0" TextWrapping="Wrap" Text="Name of Player you messaging" Foreground="White" FontSize="16" FontWeight="Medium" VerticalAlignment="Top"/>
+        <ListBox Name="LobbyChatList" Margin="192,74,0,0" Width="442" Height="229" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="192,52,0,0" TextWrapping="Wrap" Text="Chat privately with this player" Foreground="White" FontSize="11" FontWeight="Medium" VerticalAlignment="Top"/>
+        <TextBlock x:Name="UsernameTitle" HorizontalAlignment="Left" Margin="610,32,0,0" TextWrapping="Wrap" Text="Entered Username" Foreground="White" FontSize="14" FontWeight="Medium" VerticalAlignment="Top"/>
+        <TextBox x:Name="InputMessageTextBox" HorizontalAlignment="Left" Margin="192,317,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="390" Height="21"/>
+        <ProgressBar x:Name="LoadingBar" Width="120" Height="10" Margin="525,315,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsIndeterminate="True" Visibility="Collapsed"/>
+
+        <Button Name="LogoutButton" Content="Logout" Style="{StaticResource RoundedButtonStyle}" Click="LogoutButton_Click" Margin="644,373,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="82"/>
+        <Button Name="ReturnToLobbyScreen" Content="Return" Style="{StaticResource RoundedButtonStyle}" Click="ReturnButton_Click" Margin="75,373,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="82"/>
+        <Button x:Name="SendDMButton" Content="Send" Style="{StaticResource NotRoundButtonStyle}" Click="SendDMButton_Click" Margin="578,317,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="21" Width="56"/>
+        <Image HorizontalAlignment="Left" Height="20" Margin="586,31,0,0" VerticalAlignment="Top" Width="20" Source="/Images/defaultProfilePic.jpg" RenderTransformOrigin="0.614,0.719"/>
+    </Grid>
+
+</Window>

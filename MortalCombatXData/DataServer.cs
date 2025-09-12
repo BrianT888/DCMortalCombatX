@@ -7,6 +7,7 @@ using System.ServiceModel;
 using MortalCombatXLibrary;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.Collections.Concurrent;
 
 namespace MortalCombatXData
 {
@@ -40,6 +41,10 @@ namespace MortalCombatXData
             return db.GetAllPlayers();
         }
 
+        public Player GetPlayer(string username)
+        {
+            return db.GetPlayer(username);
+        }
 
         // --- Lobby Management ---
         public bool CreateLobby(string lobbyName)
@@ -85,11 +90,31 @@ namespace MortalCombatXData
             return db.GetLobbyMessages(lobbyName);
         }
 
-        public bool PrivateMessage(string from, string to, PlayerMessage message)     // *** TEMPORARY
+        public bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message)//brian - need quality check
         {
+            db.SendPrivateDM(user, targetPlayer, message);
             return true;
         }
 
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer) //brian - this links to the Database.cs GetDMS function i made
+        {
+            return db.GetDMS(user, targetPlayer);
+        }
+
+        public bool CheckNewDM(string user)//brian - added this to check if a user has new dms
+        {
+            return db.CheckNewDM(user);
+        }
+
+        public void SetDMFlag(string user, bool flag)//brian - added this to set the new dm flag for a user
+        {
+            db.SetDMFlag(user, flag);
+        }
+
+        public string GetLastDMFrom(string target)
+        {
+            return db.GetLastDMFrom(target);
+        }
 
         // --- File Sharing ---
         public bool ShareFile(string lobbyName, string link)     // *** TEMPORARY
