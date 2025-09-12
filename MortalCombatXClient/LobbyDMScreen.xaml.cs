@@ -27,6 +27,7 @@ namespace MortalCombatXClient
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
+        private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
         public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
@@ -42,16 +43,21 @@ namespace MortalCombatXClient
 
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            if(PlayersInLobbyList.SelectedItem != null)
+            if (PlayersInLobbyList.SelectedItem != null)
             {
                 string selectedPlayer = PlayersInLobbyList.SelectedItem.ToString();
-                if(selectedPlayer == username)
+                if (selectedPlayer == username)
                 {
                     MessageBox.Show("You cannot DM yourself!", "Invalid Selection");
                     return;
                 }
-                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);//brian - this ref is for privatedm field to sync closing
-                privateDMScreen.Show();
+
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == selectedPlayer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
             }
             else
             {
@@ -92,7 +98,7 @@ namespace MortalCombatXClient
                 loginScreen.Show();
                 this.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
             }
@@ -128,7 +134,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?, also randomly just got a communcation fault on GetLobbyMsgs, but i think thats cause smt else died shouldn't happen normally?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));
             List<string> displayMessages = new List<string>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -145,18 +151,36 @@ namespace MortalCombatXClient
             }
 
             //brian - diff thread currently, use dispatcher to update ui lists
-            Dispatcher.Invoke(() => 
+            Dispatcher.Invoke(() =>
             {
-                LobbyChatList.ItemsSource = displayMessages; 
+                LobbyChatList.ItemsSource = displayMessages;
                 PlayersInLobbyList.ItemsSource = displayPlayers;
                 PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
             });
+        }
+
+        private async Task PrivateDMWindowPopUp()
+        {
+            bool newDMorNah = await Task.Run(() => foob.CheckNewDM(username));
+            string dmer = await Task.Run(() => foob.GetLastDMFrom(username));
+
+            if (newDMorNah && dmer != null)
+            {
+                //foob.SetDMFlag(username, false);
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
+            }
         }
 
         private async void Polling()//brian - my version of ur polling system
         {
             while (keepPolling)
             {
+                await PrivateDMWindowPopUp();
                 await UpdateLobbyStats();
                 await Task.Delay(2000);
             }
@@ -165,6 +189,11 @@ namespace MortalCombatXClient
         protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
         {
             keepPolling = false;
+        }
+
+        public void RemoveClosedPrivateDMScreen(PrivateDMScreen closedScreen)
+        {
+            openPrivateDMScreens.Remove(closedScreen);
         }
     }
 }
