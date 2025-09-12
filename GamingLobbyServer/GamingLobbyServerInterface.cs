@@ -1,6 +1,7 @@
 ﻿using MortalCombatXLibrary;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Collections.Concurrent;
 
 namespace GamingLobbyServer
 {
@@ -21,7 +22,8 @@ namespace GamingLobbyServer
 
         [OperationContract]
         List<Player> GetAllPlayers();
-
+        [OperationContract]
+        Player GetPlayer(string username);
 
         // --- Lobby Management ---
         [OperationContract]
@@ -49,11 +51,18 @@ namespace GamingLobbyServer
         bool SendLobbyMessage(string lobbyName, string username, string message);
 
         [OperationContract]
-        bool SendPrivateMessage(string fromUser, string toUser, string message);
+        bool SendPrivateDM(string user, string targetPlayer, string message);
+        [OperationContract]
+        ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
 
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
-
+        [OperationContract]
+        bool CheckNewDM(string user);
+        [OperationContract]
+        void SetDMFlag(string user, bool flag);
+        [OperationContract]
+        string GetLastDMFrom(string target);
 
         // --- File Sharing ---
         [OperationContract]

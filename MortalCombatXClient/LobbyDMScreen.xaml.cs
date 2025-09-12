@@ -29,6 +29,8 @@ namespace MortalCombatXClient
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
+        private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
+
         public class ChatMessage
         {
             public string DisplayText { get; set; }
@@ -37,6 +39,7 @@ namespace MortalCombatXClient
             public string FileExtension { get; set; } //.jpg.txt etc
             public string FileData { get; set; }
         }
+
         public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
@@ -44,14 +47,40 @@ namespace MortalCombatXClient
             this.lobbyName = lobbyName;
             this.foob = foob;
 
+            UsernameTitle.Text = username;
+
             LobbyNameTitle.Text = lobbyName;
             Polling();
         }
 
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            //brian - gonna stay empty for awhile
+            if (PlayersInLobbyList.SelectedItem != null)
+            {
+                string selectedPlayer = PlayersInLobbyList.SelectedItem.ToString();
+                if (selectedPlayer == username)
+                {
+                    MessageBox.Show("You cannot DM yourself!", "Invalid Selection");
+                    return;
+                }
+
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == selectedPlayer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a player to DM.", "No Player Selected");
+            }
         }
+
+        //private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //brian - gonna stay empty for awhile  
+        //}
 
         private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -62,7 +91,6 @@ namespace MortalCombatXClient
             {
                 string selectedFile = openFileDialog.FileName;
                 string fileName = System.IO.Path.GetFileName(selectedFile);
-
                 byte[] fileBytes = File.ReadAllBytes(selectedFile);
                 string fileData = Convert.ToBase64String(fileBytes);
                 string fileExt = System.IO.Path.GetExtension(selectedFile); // includes the dot, e.g., .txt, .png
@@ -85,7 +113,7 @@ namespace MortalCombatXClient
                 loginScreen.Show();
                 this.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
             }
@@ -175,6 +203,23 @@ namespace MortalCombatXClient
             });
         }
 
+        private async Task PrivateDMWindowPopUp()
+        {
+            bool newDMorNah = await Task.Run(() => foob.CheckNewDM(username));
+            string dmer = await Task.Run(() => foob.GetLastDMFrom(username));
+
+            if (newDMorNah && dmer != null)
+            {
+                //foob.SetDMFlag(username, false);
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
+            }
+        }
+
         private void ViewFileButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -237,6 +282,7 @@ namespace MortalCombatXClient
         {
             while (keepPolling)
             {
+                await PrivateDMWindowPopUp();
                 await UpdateLobbyStats();
                 await Task.Delay(2000);
             }
@@ -245,6 +291,11 @@ namespace MortalCombatXClient
         protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
         {
             keepPolling = false;
+        }
+
+        public void RemoveClosedPrivateDMScreen(PrivateDMScreen closedScreen)
+        {
+            openPrivateDMScreens.Remove(closedScreen);
         }
     }
 }
