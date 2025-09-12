@@ -132,10 +132,25 @@ namespace MortalCombatXClient
             });
         }
 
+        private async Task PrivateDMWindowPopUp()
+        {
+            Console.WriteLine(username + " is checking for new DMs...");//brian - debug line
+            bool newDMorNah = await Task.Run(() => foob.CheckNewDM(username));//brian - check if there is a new dm for this user
+            Console.WriteLine(username + " New DM status: " + newDMorNah);//brian - debug line, looks like the booleans not setting correctly?
+            if (newDMorNah)//brian - if there is a new dm for this user
+            {
+                string dmer = await Task.Run(() => foob.Sender());//brian - potato method quick usage
+                Console.WriteLine("New DM from: " + dmer);
+                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);//brian - open a new privatedm window with target player
+                privateDMScreen.Show();
+            }
+        }
+
         private async void Polling()//brian - my version of ur polling system
         {
             while (keepPolling)
             {
+                await PrivateDMWindowPopUp();
                 await UpdateLobbyStats();
                 await Task.Delay(2000);
             }

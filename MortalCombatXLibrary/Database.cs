@@ -106,7 +106,7 @@ namespace MortalCombatXLibrary
             return null;
         }
 
-        public void sendPrivateDM(string user, string targetPlayer, PlayerMessage dm)
+        public void SendPrivateDM(string user, string targetPlayer, PlayerMessage dm)
         {
             if (Players.TryGetValue(user, out Player player))
             {
@@ -121,6 +121,20 @@ namespace MortalCombatXLibrary
                     player.dms.Add(targetPlayer, newQueue);
                 }
             }
+        }
+
+        public bool CheckNewDM(string target)
+        {
+            return GetPlayer(target).hasNewDMOrNot;//brian - get back the player objects bool flag
+        }
+
+        public Player GetPlayer(string username)//brian - idk why we never had this, ++ quality of life method
+        {
+            if (Players.TryGetValue(username, out Player player))
+            {
+                return player;
+            }
+            return null;
         }
     }
 }

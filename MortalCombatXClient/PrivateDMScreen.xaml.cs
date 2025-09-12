@@ -2,6 +2,7 @@
 using MortalCombatXLibrary;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +83,8 @@ namespace MortalCombatXClient
                 if (!string.IsNullOrEmpty(text))
                 {
                     await Task.Run(() => foob.SendPrivateDM(username, targetPlayer, text));
+                    await Task.Run(() => foob.GetPlayer(targetPlayer).hasNewDMOrNot = true);//brian - maybe?
+                    Debug.WriteLine("quick check " + foob.GetPlayer(targetPlayer).hasNewDMOrNot);//brian - debug line
                     InputMessageTextBox.Clear();
                     await UpdateDMStats();
                 }
@@ -94,7 +97,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateDMStats()
         {
-            Queue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));
+            Queue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));//brian - random fault exception happened?
             if(dms != null)//brian - this is to avoid null reference, when dming someone for the first time
             {
                 List<string> dmDisplayList = new List<string>();
@@ -108,6 +111,7 @@ namespace MortalCombatXClient
                 Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
             }
         }
+
         private async void Polling()//brian - my version of ur polling system
         {
             while (keepPolling)

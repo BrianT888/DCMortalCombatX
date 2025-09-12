@@ -40,6 +40,10 @@ namespace MortalCombatXData
             return db.GetAllPlayers();
         }
 
+        public Player GetPlayer(string username)
+        {
+            return db.GetPlayer(username);
+        }
 
         // --- Lobby Management ---
         public bool CreateLobby(string lobbyName)
@@ -87,13 +91,18 @@ namespace MortalCombatXData
 
         public bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message)//brian - need quality check
         {
-            db.sendPrivateDM(user, targetPlayer, message);
+            db.SendPrivateDM(user, targetPlayer, message);
             return true;
         }
 
         public Queue<PlayerMessage> GetDMS(string user, string targetPlayer) //brian - this links to the Database.cs GetDMS function i made
         {
             return db.GetDMS(user, targetPlayer);
+        }
+
+        public bool CheckNewDM(string user)//brian - added this to check if a user has new dms
+        {
+            return db.CheckNewDM(user);
         }
 
         // --- File Sharing ---

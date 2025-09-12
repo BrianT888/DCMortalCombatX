@@ -21,7 +21,8 @@ namespace GamingLobbyServer
 
         [OperationContract]
         List<Player> GetAllPlayers();
-
+        [OperationContract]
+        Player GetPlayer(string username);
 
         // --- Lobby Management ---
         [OperationContract]
@@ -55,12 +56,17 @@ namespace GamingLobbyServer
 
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
-
+        [OperationContract]
+        bool CheckNewDM(string user);
 
         // --- File Sharing ---
         [OperationContract]
         bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else
         [OperationContract]
         bool GetSharedFiles(string lobbyName);
+
+        //brian - my own random method since i needed it real quick
+        [OperationContract]
+        string Sender();
     }
 }

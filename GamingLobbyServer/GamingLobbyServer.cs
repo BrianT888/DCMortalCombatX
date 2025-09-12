@@ -5,6 +5,7 @@ using MortalCombatXData;
 using System.ServiceModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using System.Diagnostics;
 
 namespace GamingLobbyServer
 {
@@ -13,6 +14,7 @@ namespace GamingLobbyServer
     {
         private DataServerInterface foob;
         uint LogNumber = 0;
+        private string userThatSendTheDM;//brian - i just gotta test if my stuff works for dms, brains too tired to figure out a better way to get the sender name for private dms to open auto window
 
         public GamingLobbyServer()
         {
@@ -71,6 +73,18 @@ namespace GamingLobbyServer
             try
             {
                 return foob.GetAllPlayers();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
+        public Player GetPlayer(string username)
+        {
+            try
+            {
+                return foob.GetPlayer(username);
             }
             catch (Exception ex)
             {
@@ -175,6 +189,21 @@ namespace GamingLobbyServer
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
                 foob.SendPrivateDM(targetPlayer, user, new PlayerMessage { Sender = user, Content = message });//brian - run it twice so both players got the msg history
+
+                //maybe force the targetPlayer object to have a flag of new dm or smt here?
+
+                //foob.GetPlayer(targetPlayer).hasNewDMOrNot = true;//brian - its somehow not true when i output it?
+
+                //brian - debugging since it i can't set the player objects bool field into true for some reason its not matching objects idk
+                var player = foob.GetPlayer(targetPlayer);
+                player.hasNewDMOrNot = true;
+
+                //this is telling me stuffs wrong bruh
+                Debug.WriteLine($"Reference check: {ReferenceEquals(player, foob.GetPlayer(targetPlayer))}"); // must print True
+                Debug.WriteLine($"Flag value now: {foob.GetPlayer(targetPlayer).hasNewDMOrNot}");           // must print True
+
+
+                userThatSendTheDM = user;//brian - set the sender name so we can use it to open the dm window
                 return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
@@ -207,7 +236,22 @@ namespace GamingLobbyServer
             }
         }
 
+        public bool CheckNewDM(string user)//brian - still need to quality check
+        {
+            try
+            {
+                return foob.CheckNewDM(user);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
 
+        public string Sender()//brian - potato method to get what i need 100% need to find a better way
+        {
+            return userThatSendTheDM;
+        }
         // --- File Sharing ---
         public bool GetSharedFiles(string lobbyName)     // not done
         {
