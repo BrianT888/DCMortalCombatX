@@ -60,7 +60,6 @@ namespace MortalCombatXClient
             {
                 MessageBox.Show("Enter username");
             }
-
         }
     }
 }

@@ -7,6 +7,7 @@ using System.ServiceModel;
 using MortalCombatXLibrary;
 using System.Runtime.InteropServices;
 using System.Globalization;
+using System.Collections.Concurrent;
 
 namespace MortalCombatXData
 {
@@ -95,7 +96,7 @@ namespace MortalCombatXData
             return true;
         }
 
-        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer) //brian - this links to the Database.cs GetDMS function i made
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer) //brian - this links to the Database.cs GetDMS function i made
         {
             return db.GetDMS(user, targetPlayer);
         }

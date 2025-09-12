@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Collections.Concurrent;
 
 namespace MortalCombatXClient
 {
@@ -82,8 +83,7 @@ namespace MortalCombatXClient
 
                 if (!string.IsNullOrEmpty(text))
                 {
-                    await Task.Run(() => foob.SendPrivateDM(username, targetPlayer, text));
-                    await Task.Run(() => foob.GetPlayer(targetPlayer).hasNewDMOrNot = true);//brian - maybe?
+                    await Task.Run(() => foob.SendPrivateDM(username, targetPlayer, text));           
                     Debug.WriteLine("quick check " + foob.GetPlayer(targetPlayer).hasNewDMOrNot);//brian - debug line
                     InputMessageTextBox.Clear();
                     await UpdateDMStats();
@@ -97,7 +97,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateDMStats()
         {
-            Queue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));//brian - random fault exception happened?
+            ConcurrentQueue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));//brian - random fault exception happened?
             if(dms != null)//brian - this is to avoid null reference, when dming someone for the first time
             {
                 List<string> dmDisplayList = new List<string>();

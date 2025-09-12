@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Diagnostics;
+using System.Collections.Concurrent;
 
 namespace GamingLobbyServer
 {
@@ -192,18 +193,12 @@ namespace GamingLobbyServer
 
                 //maybe force the targetPlayer object to have a flag of new dm or smt here?
 
-                //foob.GetPlayer(targetPlayer).hasNewDMOrNot = true;//brian - its somehow not true when i output it?
-
                 //brian - debugging since it i can't set the player objects bool field into true for some reason its not matching objects idk
                 var player = foob.GetPlayer(targetPlayer);
-                player.hasNewDMOrNot = true;
 
                 //this is telling me stuffs wrong bruh
                 Debug.WriteLine($"Reference check: {ReferenceEquals(player, foob.GetPlayer(targetPlayer))}"); // must print True
                 Debug.WriteLine($"Flag value now: {foob.GetPlayer(targetPlayer).hasNewDMOrNot}");           // must print True
-
-
-                userThatSendTheDM = user;//brian - set the sender name so we can use it to open the dm window
                 return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
@@ -212,7 +207,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
         {
             try
             {

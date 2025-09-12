@@ -94,11 +94,11 @@ namespace MortalCombatXLibrary
             return null;
         }
 
-        public Queue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - added this to get dms of a player, returning queue instead of list since i swear we don't need to .ToList() everything like the above no?
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - added this to get dms of a player, returning queue instead of list since i swear we don't need to .ToList() everything like the above no?
         {
             if (Players.TryGetValue(user, out Player player))
             {
-                if (player.dms.TryGetValue(targetPlayer, out Queue<PlayerMessage> messages))
+                if (player.dms.TryGetValue(targetPlayer, out ConcurrentQueue<PlayerMessage> messages))
                 {
                     return messages;
                 }
@@ -110,16 +110,20 @@ namespace MortalCombatXLibrary
         {
             if (Players.TryGetValue(user, out Player player))
             {
-                if (player.dms.TryGetValue(targetPlayer, out Queue<PlayerMessage> messages))
+                if (player.dms.TryGetValue(targetPlayer, out ConcurrentQueue<PlayerMessage> messages))
                 {
                     messages.Enqueue(dm);
                 }
                 else//brian - if we haven't dm'd this player before, create new msg history for them
                 {
-                    Queue<PlayerMessage> newQueue = new Queue<PlayerMessage>();
+                    ConcurrentQueue<PlayerMessage> newQueue = new ConcurrentQueue<PlayerMessage>();
                     newQueue.Enqueue(dm);
-                    player.dms.Add(targetPlayer, newQueue);
+                    player.dms.TryAdd(targetPlayer, newQueue);
                 }
+
+                // jaxon - Notify the receiver of the new DM
+                Players.TryGetValue(targetPlayer, out Player receiver);
+                receiver.hasNewDMOrNot = true;
             }
         }
 

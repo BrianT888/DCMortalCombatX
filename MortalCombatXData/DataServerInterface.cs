@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace MortalCombatXData
 {
@@ -51,7 +52,7 @@ namespace MortalCombatXData
         [OperationContract]
         bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message);
         [OperationContract]
-        Queue<PlayerMessage> GetDMS(string user, string targetPlayer);
+        ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
         [OperationContract]
         bool CheckNewDM(string user);
         // --- File Sharing ---

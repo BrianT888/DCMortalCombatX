@@ -1,6 +1,7 @@
 ﻿using MortalCombatXLibrary;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Collections.Concurrent;
 
 namespace GamingLobbyServer
 {
@@ -52,7 +53,7 @@ namespace GamingLobbyServer
         [OperationContract]
         bool SendPrivateDM(string user, string targetPlayer, string message);
         [OperationContract]
-        Queue<PlayerMessage> GetDMS(string user, string targetPlayer);
+        ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
 
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
