@@ -59,15 +59,15 @@ namespace GamingLobbyServer
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
         bool CheckNewDM(string user);
+        [OperationContract]
+        void SetDMFlag(string user, bool flag);
+        [OperationContract]
+        string GetLastDMFrom(string target);
 
         // --- File Sharing ---
         [OperationContract]
         bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else
         [OperationContract]
         bool GetSharedFiles(string lobbyName);
-
-        //brian - my own random method since i needed it real quick
-        [OperationContract]
-        string Sender();
     }
 }

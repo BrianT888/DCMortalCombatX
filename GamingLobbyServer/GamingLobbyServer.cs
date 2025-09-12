@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace GamingLobbyServer
 {
@@ -15,7 +16,6 @@ namespace GamingLobbyServer
     {
         private DataServerInterface foob;
         uint LogNumber = 0;
-        private string userThatSendTheDM;//brian - i just gotta test if my stuff works for dms, brains too tired to figure out a better way to get the sender name for private dms to open auto window
 
         public GamingLobbyServer()
         {
@@ -189,16 +189,6 @@ namespace GamingLobbyServer
             try
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
-                foob.SendPrivateDM(targetPlayer, user, new PlayerMessage { Sender = user, Content = message });//brian - run it twice so both players got the msg history
-
-                //maybe force the targetPlayer object to have a flag of new dm or smt here?
-
-                //brian - debugging since it i can't set the player objects bool field into true for some reason its not matching objects idk
-                var player = foob.GetPlayer(targetPlayer);
-
-                //this is telling me stuffs wrong bruh
-                Debug.WriteLine($"Reference check: {ReferenceEquals(player, foob.GetPlayer(targetPlayer))}"); // must print True
-                Debug.WriteLine($"Flag value now: {foob.GetPlayer(targetPlayer).hasNewDMOrNot}");           // must print True
                 return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
@@ -243,10 +233,30 @@ namespace GamingLobbyServer
             }
         }
 
-        public string Sender()//brian - potato method to get what i need 100% need to find a better way
+        public void SetDMFlag(string user, bool flag)//brian - still need to quality check
         {
-            return userThatSendTheDM;
+            try
+            {
+                foob.SetDMFlag(user, flag);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
         }
+
+        public string GetLastDMFrom(string user)//brian - still need to quality check
+        {
+            try
+            {
+                return foob.GetPlayer(user).lastDMFrom;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
+            }
+        }
+
         // --- File Sharing ---
         public bool GetSharedFiles(string lobbyName)     // not done
         {

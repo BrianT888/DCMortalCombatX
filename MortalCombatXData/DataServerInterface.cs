@@ -55,6 +55,10 @@ namespace MortalCombatXData
         ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
         [OperationContract]
         bool CheckNewDM(string user);
+        [OperationContract]
+        void SetDMFlag(string user, bool flag);
+        [OperationContract]
+        string GetLastDMFrom(string target);
         // --- File Sharing ---
         [OperationContract]
         bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else

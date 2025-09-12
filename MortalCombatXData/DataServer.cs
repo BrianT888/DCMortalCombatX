@@ -106,6 +106,16 @@ namespace MortalCombatXData
             return db.CheckNewDM(user);
         }
 
+        public void SetDMFlag(string user, bool flag)//brian - added this to set the new dm flag for a user
+        {
+            db.SetDMFlag(user, flag);
+        }
+
+        public string GetLastDMFrom(string target)
+        {
+            return db.GetLastDMFrom(target);
+        }
+
         // --- File Sharing ---
         public bool ShareFile(string lobbyName, string link)     // *** TEMPORARY
         {

@@ -25,14 +25,10 @@ namespace MortalCombatXClient
     {
         private GamingLobbyServerInterface foob;
         private string username;
-        private string targetPlayer;
+        public string targetPlayer { get; set; }
         private bool keepPolling = true;
         LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm 
-        //brian - though i believe if we have multiple private dms open i don't think logging out from one will close the others
-        //brian - but i think we can do a reverse method, where if this lobbydm is closed, it will close all private dms that are holding this object?
 
-
-        //brian - ok we just now need like polling to check whether a new dm has been sent, so we can auto open a new window on target client to private dms
         public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen)
         {
             InitializeComponent();
@@ -67,6 +63,7 @@ namespace MortalCombatXClient
             try
             {
                 keepPolling = false;
+                lobbyDMScreen.RemoveClosedPrivateDMScreen(this);//brian - this is to remove this private dm from the list of open private dms in the lobbydm screen
                 this.Close();
             }
             catch (Exception ex)
@@ -84,7 +81,6 @@ namespace MortalCombatXClient
                 if (!string.IsNullOrEmpty(text))
                 {
                     await Task.Run(() => foob.SendPrivateDM(username, targetPlayer, text));           
-                    Debug.WriteLine("quick check " + foob.GetPlayer(targetPlayer).hasNewDMOrNot);//brian - debug line
                     InputMessageTextBox.Clear();
                     await UpdateDMStats();
                 }
@@ -97,7 +93,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateDMStats()
         {
-            ConcurrentQueue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));//brian - random fault exception happened?
+            ConcurrentQueue<PlayerMessage> dms = await Task.Run(() => foob.GetDMS(username, targetPlayer));
             if(dms != null)//brian - this is to avoid null reference, when dming someone for the first time
             {
                 List<string> dmDisplayList = new List<string>();
@@ -109,6 +105,9 @@ namespace MortalCombatXClient
                 }
 
                 Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
+            } else
+            {
+                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });//
             }
         }
 

@@ -26,6 +26,7 @@ namespace MortalCombatXClient
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
+        private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
         public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
@@ -39,16 +40,21 @@ namespace MortalCombatXClient
 
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
-            if(PlayersInLobbyList.SelectedItem != null)
+            if (PlayersInLobbyList.SelectedItem != null)
             {
                 string selectedPlayer = PlayersInLobbyList.SelectedItem.ToString();
-                if(selectedPlayer == username)
+                if (selectedPlayer == username)
                 {
                     MessageBox.Show("You cannot DM yourself!", "Invalid Selection");
                     return;
                 }
-                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);//brian - this ref is for privatedm field to sync closing
-                privateDMScreen.Show();
+
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == selectedPlayer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
             }
             else
             {
@@ -71,7 +77,7 @@ namespace MortalCombatXClient
                 loginScreen.Show();
                 this.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
             }
@@ -107,7 +113,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?, also randomly just got a communcation fault on GetLobbyMsgs, but i think thats cause smt else died shouldn't happen normally?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));
             List<string> displayMessages = new List<string>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -124,9 +130,9 @@ namespace MortalCombatXClient
             }
 
             //brian - diff thread currently, use dispatcher to update ui lists
-            Dispatcher.Invoke(() => 
+            Dispatcher.Invoke(() =>
             {
-                LobbyChatList.ItemsSource = displayMessages; 
+                LobbyChatList.ItemsSource = displayMessages;
                 PlayersInLobbyList.ItemsSource = displayPlayers;
                 PlayerCounter.Text = "Players in Lobby: " + playersInLobby.Count;
             });
@@ -134,15 +140,18 @@ namespace MortalCombatXClient
 
         private async Task PrivateDMWindowPopUp()
         {
-            Console.WriteLine(username + " is checking for new DMs...");//brian - debug line
-            bool newDMorNah = await Task.Run(() => foob.CheckNewDM(username));//brian - check if there is a new dm for this user
-            Console.WriteLine(username + " New DM status: " + newDMorNah);//brian - debug line, looks like the booleans not setting correctly?
-            if (newDMorNah)//brian - if there is a new dm for this user
+            bool newDMorNah = await Task.Run(() => foob.CheckNewDM(username));
+            string dmer = await Task.Run(() => foob.GetLastDMFrom(username));
+
+            if (newDMorNah && dmer != null)
             {
-                string dmer = await Task.Run(() => foob.Sender());//brian - potato method quick usage
-                Console.WriteLine("New DM from: " + dmer);
-                PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);//brian - open a new privatedm window with target player
-                privateDMScreen.Show();
+                //foob.SetDMFlag(username, false);
+                if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
+                {
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
+                    privateDMScreen.Show();
+                    openPrivateDMScreens.Add(privateDMScreen);
+                }
             }
         }
 
@@ -159,6 +168,11 @@ namespace MortalCombatXClient
         protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
         {
             keepPolling = false;
+        }
+
+        public void RemoveClosedPrivateDMScreen(PrivateDMScreen closedScreen)
+        {
+            openPrivateDMScreens.Remove(closedScreen);
         }
     }
 }
