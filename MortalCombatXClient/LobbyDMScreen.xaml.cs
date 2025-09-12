@@ -31,15 +31,6 @@ namespace MortalCombatXClient
         private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
 
-        public class ChatMessage
-        {
-            public string DisplayText { get; set; }
-            public bool IsFile { get; set; }
-            public string FileName { get; set; }
-            public string FileExtension { get; set; } //.jpg.txt etc
-            public string FileData { get; set; }
-        }
-
         public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
         {
             InitializeComponent();
@@ -76,11 +67,6 @@ namespace MortalCombatXClient
                 MessageBox.Show("Please select a player to DM.", "No Player Selected");
             }
         }
-
-        //private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    //brian - gonna stay empty for awhile  
-        //}
 
         private async void ShareFileButton_Click(object sender, RoutedEventArgs e)
         {
