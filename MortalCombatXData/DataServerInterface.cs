@@ -46,11 +46,11 @@ namespace MortalCombatXData
 
         // --- Message Management ---
         [OperationContract]
-        bool SendLobbyMessage(string lobbyName, PlayerMessage message);
+        void SendLobbyMessage(string lobbyName, PlayerMessage message);
         [OperationContract]
         List<PlayerMessage> GetLobbyMessages(string lobbyName);
         [OperationContract]
-        bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message);
+        void SendPrivateDM(string user, string targetPlayer, PlayerMessage message);
         [OperationContract]
         ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
         [OperationContract]
@@ -59,11 +59,5 @@ namespace MortalCombatXData
         void SetDMFlag(string user, bool flag);
         [OperationContract]
         string GetLastDMFrom(string target);
-        // --- File Sharing ---
-        [OperationContract]
-        bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else
-        [OperationContract]
-        bool GetSharedFiles(string lobbyName);
-
     }
 }

@@ -23,13 +23,21 @@ namespace GamingLobbyServer
             foob = GetDataChannel();
         }
 
-        // Duplex specific method
+        // Duplex specific methods
         public void RegisterForCallbacks(string username)
         {
             var callback = OperationContext.Current.GetCallbackChannel<GamingLobbyCallback>();
             if (!duplexClients.ContainsKey(username))
             {
                 duplexClients.Add(username, callback);
+            }
+        }
+
+        private void NotifyDuplexClients(string s)
+        {
+            foreach (var client in duplexClients.Values)
+            {
+                client.OnLobbyPlayersUpdated(s);
             }
         }
 
@@ -73,6 +81,7 @@ namespace GamingLobbyServer
         public bool Logout(string username)
         {
             bool success = foob.RemovePlayer(username);
+            duplexClients.Remove(username);
             if (success)
             {
                 Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
@@ -124,11 +133,7 @@ namespace GamingLobbyServer
                 Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
 
-            // Notify duplex clients
-            foreach (var client in duplexClients.Values)
-            {
-                client.OnLobbyCreated(lobbyName);
-            }
+            NotifyDuplexClients(lobbyName);
         }
 
         public bool DeleteLobby(string lobbyName)
@@ -147,6 +152,8 @@ namespace GamingLobbyServer
             if (success)
             {
                 Log($"Player '{username}' successfully joined Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
+
+                NotifyDuplexClients(lobbyName);
             }
             return success;
         }
@@ -157,6 +164,8 @@ namespace GamingLobbyServer
             if (success)
             {
                 Log($"Player '{username}' successfully left Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
+
+                NotifyDuplexClients(lobbyName);
             }
             return success;
         }
@@ -187,11 +196,12 @@ namespace GamingLobbyServer
 
 
         // --- Message Management ---
-        public bool SendLobbyMessage(string lobbyName, string username, string message)
+        public void SendLobbyMessage(string lobbyName, string username, string message)
         {
             try
             {
-                return foob.SendLobbyMessage(lobbyName, new PlayerMessage { Sender = username, Content = message });
+                foob.SendLobbyMessage(lobbyName, new PlayerMessage { Sender = username, Content = message });
+                NotifyDuplexClients(lobbyName);
             }
             catch (Exception ex)
             {
@@ -199,12 +209,12 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
+        public void SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
         {
             try
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message });
-                return true;//brian - lowk idk what to do this this return value lol
+                NotifyDuplexClients(targetPlayer);
             }
             catch (Exception ex)
             {
@@ -265,33 +275,6 @@ namespace GamingLobbyServer
             try
             {
                 return foob.GetPlayer(user).lastDMFrom;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-        // --- File Sharing ---
-        public bool GetSharedFiles(string lobbyName)     // not done
-        {
-            try
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-
-
-        public bool ShareFile(string lobbyName, string link)     // not done
-        {
-            try
-            {
-                return false;
             }
             catch (Exception ex)
             {

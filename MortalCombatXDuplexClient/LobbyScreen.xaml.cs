@@ -37,7 +37,7 @@ namespace MortalCombatXDuplexClient
 
             // Subscribe to events
             callbackHandler.LobbyCreated += async (lobbyName) => await Dispatcher.InvokeAsync(UpdateLobbyList);
-            callbackHandler.LobbyPlayersUpdated += async (lobbyName, messages) => await Dispatcher.InvokeAsync(UpdateLobbyList);
+            callbackHandler.LobbyPlayersUpdated += async (lobbyName) => await Dispatcher.InvokeAsync(UpdateLobbyList);
 
             // Load initial lobby list
             Task.Run(async () => await UpdateLobbyList());           

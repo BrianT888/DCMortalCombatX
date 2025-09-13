@@ -14,11 +14,11 @@ namespace MortalCombatXLibrary
         void OnLobbyCreated(string lobbyName);
 
         [OperationContract(IsOneWay = true)]
-        void OnLobbyMessagesUpdated(string lobbyName, List<ChatMessage> messages);
+        void OnLobbyMessagesUpdated(string lobbyName);
         [OperationContract(IsOneWay = true)]
-        void OnLobbyPlayersUpdated(string lobbyName, List<Player> players);
+        void OnLobbyPlayersUpdated(string lobbyName);
 
         [OperationContract(IsOneWay = true)]
-        void OnPrivateMessageReceived(string targetPlayer, List<PlayerMessage> message);
+        void OnPrivateMessageReceived(string targetPlayer);
     }
 }

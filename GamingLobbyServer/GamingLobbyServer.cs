@@ -170,11 +170,11 @@ namespace GamingLobbyServer
 
 
         // --- Message Management ---
-        public bool SendLobbyMessage(string lobbyName, string username, string message)
+        public void SendLobbyMessage(string lobbyName, string username, string message)
         {
             try
             {
-                return foob.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
+               foob.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
             }
             catch (Exception ex)
             {
@@ -182,12 +182,11 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
+        public void SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
         {
             try
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
-                return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
             {

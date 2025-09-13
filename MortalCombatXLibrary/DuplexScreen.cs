@@ -9,8 +9,8 @@ namespace MortalCombatXLibrary
     public interface DuplexScreen
     {
         void OnLobbyCreated(string lobbyName);
-        void OnLobbyMessagesUpdated(string lobbyName, List<ChatMessage> messages);
-        void OnLobbyPlayersUpdated(string lobbyName, List<Player> players);
-        void OnPrivateMessageReceived(string targetPlayer, List<PlayerMessage> messages);
+        void OnLobbyMessagesUpdated(string lobbyName);
+        void OnLobbyPlayersUpdated(string lobbyName);
+        void OnPrivateMessageReceived(string targetPlayer);
     }
 }

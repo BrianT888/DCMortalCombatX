@@ -41,9 +41,15 @@ namespace MortalCombatXDuplexClient
             this.callbackHandler = callbackHandler;
 
             UsernameTitle.Text = username;
-
             LobbyNameTitle.Text = lobbyName;
-            Polling();
+
+            // Subscribe to events
+            callbackHandler.LobbyMessagesUpdated += async (lobby) => await Dispatcher.InvokeAsync(UpdateLobbyStats);
+            callbackHandler.PrivateMessageReceived += async (targetPlayer) => await Dispatcher.InvokeAsync(PrivateDMWindowPopUp);
+            callbackHandler.LobbyPlayersUpdated += async (lobby) => await Dispatcher.InvokeAsync(UpdateLobbyStats);
+
+            // Load initial lobby stats
+            Task.Run(async () => await UpdateLobbyStats());
         }
 
         private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)

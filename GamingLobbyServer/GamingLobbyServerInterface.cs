@@ -44,10 +44,10 @@ namespace GamingLobbyServer
 
         // --- Message Management ---
         [OperationContract]
-        bool SendLobbyMessage(string lobbyName, string username, string message);
+        void SendLobbyMessage(string lobbyName, string username, string message);
 
         [OperationContract]
-        bool SendPrivateDM(string user, string targetPlayer, string message);
+        void SendPrivateDM(string user, string targetPlayer, string message);
         [OperationContract]
         ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
 

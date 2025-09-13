@@ -12,28 +12,29 @@ namespace MortalCombatXDuplexClient
     {
         // Events that screens can subscribe to
         public event Action<string> LobbyCreated;
-        public event Action<string, List<ChatMessage>> LobbyMessagesUpdated;
-        public event Action<string, List<Player>> LobbyPlayersUpdated;
-        public event Action<string, List<PlayerMessage>> PrivateMessageReceived;
+        public event Action<string> LobbyMessagesUpdated;
+        public event Action<string> LobbyPlayersUpdated;
+        public event Action<string> PrivateMessageReceived;
+
 
         public void OnLobbyCreated(string lobbyName)
         {
             LobbyCreated?.Invoke(lobbyName);          
         }
 
-        public void OnLobbyMessagesUpdated(string lobbyName, List<ChatMessage> messages)
+        public void OnLobbyMessagesUpdated(string lobbyName)
         {
-            LobbyMessagesUpdated?.Invoke(lobbyName, messages);
+            LobbyMessagesUpdated?.Invoke(lobbyName);
         }
 
-        public void OnLobbyPlayersUpdated(string lobbyName, List<Player> players)
+        public void OnLobbyPlayersUpdated(string lobbyName)
         {
-            LobbyPlayersUpdated?.Invoke(lobbyName, players);
+            LobbyPlayersUpdated?.Invoke(lobbyName);
         }
 
-        public void OnPrivateMessageReceived(string targetPlayer, List<PlayerMessage> messages)
+        public void OnPrivateMessageReceived(string targetPlayer)
         {
-            PrivateMessageReceived?.Invoke(targetPlayer, messages);
+            PrivateMessageReceived?.Invoke(targetPlayer);
         }
     }
 }
