@@ -11,26 +11,15 @@ using System.Threading;
 
 namespace GamingLobbyServer
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class GamingLobbyServer : GamingLobbyServerInterface
     {
         private DataServerInterface foob;
         uint LogNumber = 0;
-        private Dictionary<string, GamingLobbyCallback> duplexClients = new Dictionary<string, GamingLobbyCallback>();
 
         public GamingLobbyServer()
         {
             foob = GetDataChannel();
-        }
-
-        // Duplex specific method
-        public void RegisterForCallbacks(string username)
-        {
-            var callback = OperationContext.Current.GetCallbackChannel<GamingLobbyCallback>();
-            if (!duplexClients.ContainsKey(username))
-            {
-                duplexClients.Add(username, callback);
-            }
         }
 
         // Creates channel to Data Tier
@@ -122,12 +111,6 @@ namespace GamingLobbyServer
             if (foob.CreateLobby(lobbyName))
             {
                 Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
-            }
-
-            // Notify duplex clients
-            foreach (var client in duplexClients.Values)
-            {
-                client.OnLobbyCreated(lobbyName);                
             }
         }
 

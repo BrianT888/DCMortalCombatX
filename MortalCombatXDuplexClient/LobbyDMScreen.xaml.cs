@@ -25,14 +25,14 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LobbyDMScreen : Window
     {
-        private GamingLobbyServerInterface foob;//brian - im just keeping the same style as you did for the previous screen
+        private GamingLobbyServerDuplexInterface foob;//brian - im just keeping the same style as you did for the previous screen
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
         private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
         private CallbackHandler callbackHandler;
 
-        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob, CallbackHandler callbackHandler)
+        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerDuplexInterface foob, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;

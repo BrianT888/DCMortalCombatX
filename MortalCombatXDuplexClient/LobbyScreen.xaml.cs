@@ -24,10 +24,10 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LobbyScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
         private string Username;
         private CallbackHandler callbackHandler;
-        public LobbyScreen(string username, GamingLobbyServerInterface foob, CallbackHandler callbackHandler)
+        public LobbyScreen(string username, GamingLobbyServerDuplexInterface foob, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             Username = username;

@@ -23,14 +23,14 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class PrivateDMScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
         private string username;
         public string targetPlayer { get; set; }
         private bool keepPolling = true;
         LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm
         private CallbackHandler callbackHandler;
 
-        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen, CallbackHandler callbackHandler)
+        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerDuplexInterface foob, LobbyDMScreen lobbyDMScreen, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;

@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GamingLobbyServer.cs" />
+    <Compile Include="GamingLobbyServerDuplex.cs" />
+    <Compile Include="GamingLobbyServerDuplexInterface.cs" />
     <Compile Include="GamingLobbyServerInterface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

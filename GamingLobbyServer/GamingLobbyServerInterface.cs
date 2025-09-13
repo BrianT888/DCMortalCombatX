@@ -5,12 +5,9 @@ using System.Collections.Concurrent;
 
 namespace GamingLobbyServer
 {
-    [ServiceContract(CallbackContract = typeof(GamingLobbyCallback))]
+    [ServiceContract]
     public interface GamingLobbyServerInterface//practically our business tier
     {
-        [OperationContract]
-        void RegisterForCallbacks(string username);
-
         // --- Player Management --- 
         [OperationContract]
         [FaultContract(typeof(UsernameExistsFault))]

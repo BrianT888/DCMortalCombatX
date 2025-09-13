@@ -15,14 +15,14 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LoginScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
         private CallbackHandler callbackHandler;
         public string LoggedInUsername { get; private set; }
         public LoginScreen()
         {
             InitializeComponent();
 
-            ChannelFactory<GamingLobbyServerInterface> foobFactory;
+            ChannelFactory<GamingLobbyServerDuplexInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();
 
             // Create callback handler
@@ -30,15 +30,15 @@ namespace MortalCombatXDuplexClient
 
             // Create duplex channel
             InstanceContext context = new InstanceContext(callbackHandler);
-            string url = "net.tcp://localhost:8200/GamingLobbyService";
-            foobFactory = new DuplexChannelFactory<GamingLobbyServerInterface>(context, tcp, url);
+            string url = "net.tcp://localhost:8201/GamingLobbyDuplexService";
+            foobFactory = new DuplexChannelFactory<GamingLobbyServerDuplexInterface>(context, tcp, url);
             foob = foobFactory.CreateChannel();
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = EnteredText.Text.Trim();
-
+             
 
             if (!string.IsNullOrEmpty(username))
             {
