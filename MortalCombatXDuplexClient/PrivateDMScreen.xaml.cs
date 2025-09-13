@@ -26,7 +26,6 @@ namespace MortalCombatXDuplexClient
         private GamingLobbyServerDuplexInterface foob;
         private string username;
         public string targetPlayer { get; set; }
-        private bool keepPolling = true;
         LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm
         private CallbackHandler callbackHandler;
 
@@ -53,7 +52,6 @@ namespace MortalCombatXDuplexClient
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.Logout(username));
                 LoginScreen loginScreen = new LoginScreen();
                 loginScreen.Show();
@@ -70,7 +68,6 @@ namespace MortalCombatXDuplexClient
         {
             try
             {
-                keepPolling = false;
                 lobbyDMScreen.RemoveClosedPrivateDMScreen(this);//brian - this is to remove this private dm from the list of open private dms in the lobbydm screen
                 this.Close();
             }

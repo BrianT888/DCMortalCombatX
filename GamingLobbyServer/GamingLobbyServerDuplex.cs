@@ -49,36 +49,62 @@ namespace GamingLobbyServer
         }
 
         // --- Player Management ---
-        public bool Login(string username)
+        public void Login(string username)
         {
+            bool exists = false;
             // Check if username already exists
             List<Player> currentPlayers = foob.GetAllPlayers();
             foreach (Player p in currentPlayers)
             {
                 if (p.Username.ToLower() == username.ToLower())
                 {
-                    var fault = new UsernameExistsFault { Message = "That username is already taken." };
-                    throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
+                    if (p.isLoggedIn)
+                    {
+                        var fault = new UsernameExistsFault { Message = "That username is already taken." };
+                        throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
+                    }
+                    else
+                    {
+                        exists = true;
+                        break;
+                    }
                 }
             }
-
-            bool success = foob.AddNewPlayer(username);
-            if (success)
+          
+            if (!exists)
             {
-                Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+                foob.AddNewPlayer(username);
             }
-            return success;
+            
+            foob.GetPlayer(username).isLoggedIn = true;                       
+            Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
         }
 
-        public bool Logout(string username)
+        private void KickFromLobby(string username)
         {
-            bool success = foob.RemovePlayer(username);
-            duplexClients.Remove(username);
-            if (success)
+            List<Lobby> lobbies = foob.GetAllLobbies();
+
+            foreach (Lobby l in lobbies) 
             {
-                Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+                if (l.Players.TryRemove(username, out _))
+                {
+                    foob.RemovePlayerFromLobby(l.LobbyName, username);
+                }                
             }
-            return success;
+        }
+
+        public void Logout(string username)
+        {            
+            foob.GetPlayer(username).isLoggedIn = false;
+            duplexClients.Remove(username);
+            KickFromLobby(username);
+            Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+
+            // Notify duplex clients
+            foreach (var client in duplexClients.Values)
+            {
+                client.OnLobbyPlayersUpdated(username);
+            }
         }
 
         public List<Player> GetAllPlayers()

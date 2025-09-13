@@ -28,7 +28,6 @@ namespace MortalCombatXDuplexClient
         private GamingLobbyServerDuplexInterface foob;//brian - im just keeping the same style as you did for the previous screen
         private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
         private string lobbyName;
-        private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
         private CallbackHandler callbackHandler;
 
@@ -101,7 +100,6 @@ namespace MortalCombatXDuplexClient
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.Logout(username));
                 LoginScreen loginScreen = new LoginScreen();
                 loginScreen.Show();
@@ -118,7 +116,6 @@ namespace MortalCombatXDuplexClient
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.LeaveLobby(lobbyName, username));
                 LobbyScreen lobbyScreen = new LobbyScreen(username, foob, callbackHandler);
                 lobbyScreen.Show();
@@ -270,11 +267,6 @@ namespace MortalCombatXDuplexClient
             {
                 MessageBox.Show($"Error opening file: {ex.Message}");
             }
-        }
-
-        protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
-        {
-            keepPolling = false;
         }
 
         public void RemoveClosedPrivateDMScreen(PrivateDMScreen closedScreen)

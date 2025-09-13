@@ -11,10 +11,10 @@ namespace GamingLobbyServer
         // --- Player Management --- 
         [OperationContract]
         [FaultContract(typeof(UsernameExistsFault))]
-        bool Login(string username);
+        void Login(string username);
 
         [OperationContract]
-        bool Logout(string username);
+        void Logout(string username);
 
         [OperationContract]
         List<Player> GetAllPlayers();

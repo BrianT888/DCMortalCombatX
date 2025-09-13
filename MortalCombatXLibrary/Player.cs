@@ -9,6 +9,7 @@ namespace MortalCombatXLibrary
 {
     public class Player
     {
+        public bool isLoggedIn {  get; set; }
         public string Username { get; set; }
         public bool hasNewDMOrNot { get; set; } = false;//brian - added this to check if we have a new dm
         public string lastDMFrom { get; set; } = "";//brian - added this to store the last person who dm'd us, for notification purposes
