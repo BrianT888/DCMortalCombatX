@@ -11,15 +11,26 @@ using System.Threading;
 
 namespace GamingLobbyServer
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.Single)]
     public class GamingLobbyServer : GamingLobbyServerInterface
     {
         private DataServerInterface foob;
         uint LogNumber = 0;
+        private Dictionary<string, GamingLobbyCallback> duplexClients = new Dictionary<string, GamingLobbyCallback>();
 
         public GamingLobbyServer()
         {
             foob = GetDataChannel();
+        }
+
+        // Duplex specific method
+        public void RegisterForCallbacks(string username)
+        {
+            var callback = OperationContext.Current.GetCallbackChannel<GamingLobbyCallback>();
+            if (!duplexClients.ContainsKey(username))
+            {
+                duplexClients.Add(username, callback);
+            }
         }
 
         // Creates channel to Data Tier
@@ -95,7 +106,7 @@ namespace GamingLobbyServer
 
 
         // --- Lobby Management ---
-        public bool CreateLobby(string lobbyName)
+        public void CreateLobby(string lobbyName)
         {
             // Check if lobby name already exists
             List<Lobby> currentLobbies = foob.GetAllLobbies();
@@ -108,12 +119,16 @@ namespace GamingLobbyServer
                 }
             }
 
-            bool success = foob.CreateLobby(lobbyName);
-            if (success)
+            if (foob.CreateLobby(lobbyName))
             {
                 Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
-            return success;
+
+            // Notify duplex clients
+            foreach (var client in duplexClients.Values)
+            {
+                client.OnLobbyCreated(lobbyName);                
+            }
         }
 
         public bool DeleteLobby(string lobbyName)

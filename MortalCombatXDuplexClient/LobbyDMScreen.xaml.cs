@@ -30,13 +30,15 @@ namespace MortalCombatXDuplexClient
         private string lobbyName;
         private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
+        private CallbackHandler callbackHandler;
 
-        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
+        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;
             this.lobbyName = lobbyName;
             this.foob = foob;
+            this.callbackHandler = callbackHandler;
 
             UsernameTitle.Text = username;
 
@@ -57,7 +59,7 @@ namespace MortalCombatXDuplexClient
 
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == selectedPlayer) == null)
                 {
-                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this, callbackHandler);
                     privateDMScreen.Show();
                     openPrivateDMScreens.Add(privateDMScreen);
                 }
@@ -112,7 +114,7 @@ namespace MortalCombatXDuplexClient
             {
                 keepPolling = false;
                 await Task.Run(() => foob.LeaveLobby(lobbyName, username));
-                LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+                LobbyScreen lobbyScreen = new LobbyScreen(username, foob, callbackHandler);
                 lobbyScreen.Show();
                 this.Close();
             }
@@ -199,7 +201,7 @@ namespace MortalCombatXDuplexClient
                 //foob.SetDMFlag(username, false);
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
                 {
-                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this, callbackHandler);
                     privateDMScreen.Show();
                     openPrivateDMScreens.Add(privateDMScreen);
                 }

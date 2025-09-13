@@ -1,11 +1,12 @@
-﻿using System;
-using System.ServiceModel;
+﻿using GamingLobbyServer;
+using MortalCombatXLibrary;
+using System;
 using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GamingLobbyServer;
-using System.Threading.Tasks;
-using MortalCombatXLibrary;
 
 namespace MortalCombatXDuplexClient
 {
@@ -15,6 +16,7 @@ namespace MortalCombatXDuplexClient
     public partial class LoginScreen : Window
     {
         private GamingLobbyServerInterface foob;
+        private CallbackHandler callbackHandler;
         public string LoggedInUsername { get; private set; }
         public LoginScreen()
         {
@@ -23,10 +25,13 @@ namespace MortalCombatXDuplexClient
             ChannelFactory<GamingLobbyServerInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();
 
-            //brian - don't think we need timeout timers right
+            // Create callback handler
+            callbackHandler = new CallbackHandler();
 
+            // Create duplex channel
+            InstanceContext context = new InstanceContext(callbackHandler);
             string url = "net.tcp://localhost:8200/GamingLobbyService";
-            foobFactory = new ChannelFactory<GamingLobbyServerInterface>(tcp, url);
+            foobFactory = new DuplexChannelFactory<GamingLobbyServerInterface>(context, tcp, url);
             foob = foobFactory.CreateChannel();
         }
 
@@ -44,8 +49,11 @@ namespace MortalCombatXDuplexClient
 
                     await Task.Run(() => foob.Login(username));
 
+                    // Register for callbacks
+                    foob.RegisterForCallbacks(username);
+
                     // Go to lobby screen
-                    LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+                    LobbyScreen lobbyScreen = new LobbyScreen(username, foob, callbackHandler);
                     lobbyScreen.Show();
                     this.Close();
                 }

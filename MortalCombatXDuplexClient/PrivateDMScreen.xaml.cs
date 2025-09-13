@@ -27,15 +27,17 @@ namespace MortalCombatXDuplexClient
         private string username;
         public string targetPlayer { get; set; }
         private bool keepPolling = true;
-        LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm 
+        LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm
+        private CallbackHandler callbackHandler;
 
-        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen)
+        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;
             this.targetPlayer = targetPlayer;
             this.foob = foob;
             this.lobbyDMScreen = lobbyDMScreen;
+            this.callbackHandler = callbackHandler;
 
             UsernameTitle.Text = username;
 

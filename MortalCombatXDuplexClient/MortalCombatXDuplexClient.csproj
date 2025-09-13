@@ -62,6 +62,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallbackHandler.cs" />
     <Compile Include="LobbyDMScreen.xaml.cs">
       <DependentUpon>LobbyDMScreen.xaml</DependentUpon>
     </Compile>

@@ -16,6 +16,7 @@ namespace MortalCombatXData
     {
         private static Database db = new Database();
 
+
         // --- Player Management ---
         public bool AddNewPlayer(string username)
         {

@@ -5,12 +5,11 @@ using System.Collections.Concurrent;
 
 namespace GamingLobbyServer
 {
-    [ServiceContract]
+    [ServiceContract(CallbackContract = typeof(GamingLobbyCallback))]
     public interface GamingLobbyServerInterface//practically our business tier
     {
-        //Brian - I added a reference to the library, but im unsure if the business interface should ref the library or not?
-        //if not some of these methods i pasted from the data int will have to be changed into smt else, then remove the reference
-        //mainly the ones involving the player, lobby and player messages?
+        [OperationContract]
+        void RegisterForCallbacks(string username);
 
         // --- Player Management --- 
         [OperationContract]
@@ -28,7 +27,7 @@ namespace GamingLobbyServer
         // --- Lobby Management ---
         [OperationContract]
         [FaultContract(typeof(LobbyExistsFault))]
-        bool CreateLobby(string lobbyName);
+        void CreateLobby(string lobbyName);
 
         [OperationContract]
         bool DeleteLobby(string lobbyName);
