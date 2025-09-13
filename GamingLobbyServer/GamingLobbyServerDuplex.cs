@@ -33,14 +33,6 @@ namespace GamingLobbyServer
             }
         }
 
-        private void NotifyDuplexClients(string s)
-        {
-            foreach (var client in duplexClients.Values)
-            {
-                client.OnLobbyPlayersUpdated(s);
-            }
-        }
-
         // Creates channel to Data Tier
         private DataServerInterface GetDataChannel()
         {
@@ -133,7 +125,11 @@ namespace GamingLobbyServer
                 Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
 
-            NotifyDuplexClients(lobbyName);
+            // Notify duplex clients
+            foreach (var client in duplexClients.Values)
+            {
+                client.OnLobbyCreated(lobbyName);
+            }
         }
 
         public bool DeleteLobby(string lobbyName)
@@ -153,7 +149,11 @@ namespace GamingLobbyServer
             {
                 Log($"Player '{username}' successfully joined Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
 
-                NotifyDuplexClients(lobbyName);
+                // Notify duplex clients
+                foreach (var client in duplexClients.Values)
+                {
+                    client.OnLobbyPlayersUpdated(lobbyName);
+                }
             }
             return success;
         }
@@ -165,7 +165,11 @@ namespace GamingLobbyServer
             {
                 Log($"Player '{username}' successfully left Lobby '{lobbyName}'.\nPlayer list in '{lobbyName}': " + string.Join(", ", foob.GetPlayersInLobby(lobbyName).Select(p => p.Username)));
 
-                NotifyDuplexClients(lobbyName);
+                // Notify duplex clients
+                foreach (var client in duplexClients.Values)
+                {
+                    client.OnLobbyPlayersUpdated(lobbyName);
+                }
             }
             return success;
         }
@@ -201,7 +205,12 @@ namespace GamingLobbyServer
             try
             {
                 foob.SendLobbyMessage(lobbyName, new PlayerMessage { Sender = username, Content = message });
-                NotifyDuplexClients(lobbyName);
+                
+                // Notify duplex clients
+                foreach (var client in duplexClients.Values)
+                {
+                    client.OnLobbyMessagesUpdated(lobbyName);
+                }
             }
             catch (Exception ex)
             {
@@ -214,7 +223,12 @@ namespace GamingLobbyServer
             try
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message });
-                NotifyDuplexClients(targetPlayer);
+
+                // Notify duplex clients
+                foreach (var client in duplexClients.Values)
+                {
+                    client.OnPrivateMessageReceived(targetPlayer);
+                }
             }
             catch (Exception ex)
             {

@@ -272,16 +272,6 @@ namespace MortalCombatXDuplexClient
             }
         }
 
-        private async void Polling()//brian - my version of ur polling system
-        {
-            while (keepPolling)
-            {
-                await PrivateDMWindowPopUp();
-                await UpdateLobbyStats();
-                await Task.Delay(2000);
-            }
-        }
-
         protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
         {
             keepPolling = false;

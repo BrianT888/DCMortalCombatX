@@ -43,7 +43,11 @@ namespace MortalCombatXDuplexClient
 
             TargetPlayer.Text = targetPlayer;
 
-            Polling();
+            // Subscribe to events
+            callbackHandler.PrivateMessageReceived += async (lobby) => await Dispatcher.InvokeAsync(UpdateDMStats);
+
+            // Load initial lobby stats
+            Task.Run(async () => await UpdateDMStats());
         }
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -112,15 +116,6 @@ namespace MortalCombatXDuplexClient
             } else
             {
                 Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });//
-            }
-        }
-
-        private async void Polling()//brian - my version of ur polling system
-        {
-            while (keepPolling)
-            {
-                await UpdateDMStats();
-                await Task.Delay(2000);
             }
         }
     }
