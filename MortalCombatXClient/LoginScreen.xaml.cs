@@ -23,8 +23,6 @@ namespace MortalCombatXClient
             ChannelFactory<GamingLobbyServerInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();
 
-            //brian - don't think we need timeout timers right
-
             string url = "net.tcp://localhost:8200/GamingLobbyService";
             foobFactory = new ChannelFactory<GamingLobbyServerInterface>(tcp, url);
             foob = foobFactory.CreateChannel();
