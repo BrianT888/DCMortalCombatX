@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MortalCombatXLibrary;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace MortalCombatXDuplexClient
 {
@@ -23,48 +24,53 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LobbyScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
         private string Username;
-        private bool keepPolling = true;
-        public LobbyScreen(string username, GamingLobbyServerInterface foob)
+        private CallbackHandler callbackHandler;
+        public LobbyScreen(string username, GamingLobbyServerDuplexInterface foob, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             Username = username;
-            this.foob = foob;
-            
             UsernameTitle.Text = username;
+            this.foob = foob;
+            this.callbackHandler = callbackHandler;
 
-            // Start a background task that periodically updates the list of lobbies
-            Task.Run(async () =>
-            {
-                while (keepPolling)
-                {
-                    await UpdateLobbyList();
-                    await Task.Delay(2000);     // Wait 2 seconds before the next list refresh
-                }
-            });
+            // Subscribe to events
+            callbackHandler.LobbyCreated += async (lobbyName) => await Dispatcher.InvokeAsync(UpdateLobbyList);
+            callbackHandler.LobbyPlayersUpdated += async (lobbyName) => await Dispatcher.InvokeAsync(UpdateLobbyList);
+
+            // Load initial lobby list
+            Task.Run(async () => await UpdateLobbyList());           
         }
 
         // Update UI to show list of lobby names and number of players in the lobby
-        private async Task UpdateLobbyList()
+        public async Task UpdateLobbyList()
         {
-            List<Lobby> lobbies = await Task.Run(() => foob.GetAllLobbies());
-            List<string> lobbyDisplayList = new List<string>();
-
-            foreach (var lobby in lobbies)
+            try
             {
-                try
+                List<Lobby> lobbies = await Task.Run(() => foob.GetAllLobbies());
+                List<string> lobbyDisplayList = new List<string>();
+
+                foreach (var lobby in lobbies)
                 {
-                    List<Player> players = await Task.Run(() => foob.GetPlayersInLobby(lobby.LobbyName));
-                    lobbyDisplayList.Add($"| {lobby.LobbyName} | {players.Count} players |");
+                    try
+                    {
+                        List<Player> players = await Task.Run(() => foob.GetPlayersInLobby(lobby.LobbyName));
+                        lobbyDisplayList.Add($"| {lobby.LobbyName} | {players.Count} players |");
+                    }
+                    catch
+                    {
+                        lobbyDisplayList.Add($"| {lobby.LobbyName} | 0 players | ");
+                    }
                 }
-                catch
-                {
-                    lobbyDisplayList.Add($"| {lobby.LobbyName} | 0 players | ");
-                }
+                Dispatcher.Invoke(() => LobbyList.ItemsSource = lobbyDisplayList);     // Display contents of lobbyDisplayList on the UI
             }
-            Dispatcher.Invoke(() => LobbyList.ItemsSource = lobbyDisplayList);     // Display contents of lobbyDisplayList on the UI
+            catch (Exception ex)
+            {
+                Dispatcher.Invoke(() => MessageBox.Show("Error updating lobby list: " + ex.Message));
+            }
         }
+           
 
         private async void CreateLobbyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -110,10 +116,9 @@ namespace MortalCombatXDuplexClient
                     string lobbyName = selectedText.Split('|')[1].Trim();
 
                     await Task.Run(() => foob.JoinLobby(lobbyName, Username));
-                    keepPolling = false;
 
                     // Go to LobbyDMScreen
-                    LobbyDMScreen lobbyDMScreen = new LobbyDMScreen(Username, lobbyName, foob);
+                    LobbyDMScreen lobbyDMScreen = new LobbyDMScreen(Username, lobbyName, foob, callbackHandler);
                     lobbyDMScreen.Show();
                     this.Close();
                 }
@@ -130,26 +135,20 @@ namespace MortalCombatXDuplexClient
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LogoutButton.IsEnabled = false;//brian - is this necessary? in my one for LobbyDMScreen i don't even both with isEnabled for the button, i swear its instantaneous
+            LogoutButton.IsEnabled = false;
 
             try
             {
-                keepPolling = false;
-
                 await Task.Run(() => foob.Logout(Username));
-
-                Application.Current.Shutdown();
+                LoginScreen loginScreen = new LoginScreen();
+                loginScreen.Show();
+                this.Close();
             }
             catch(Exception ex)
             {
                 MessageBox.Show("Error logging out: " + ex.Message, "Logout Error");
                 LogoutButton.IsEnabled = true;
             }
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            keepPolling = false;
         }
     }
 }

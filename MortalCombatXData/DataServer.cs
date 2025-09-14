@@ -16,6 +16,7 @@ namespace MortalCombatXData
     {
         private static Database db = new Database();
 
+
         // --- Player Management ---
         public bool AddNewPlayer(string username)
         {
@@ -44,6 +45,11 @@ namespace MortalCombatXData
         public Player GetPlayer(string username)
         {
             return db.GetPlayer(username);
+        }
+
+        public void SetIsLoggedIn(string username, bool isLoggedIn)
+        {
+            db.SetIsLoggedIn(username, isLoggedIn);
         }
 
         // --- Lobby Management ---
@@ -79,10 +85,9 @@ namespace MortalCombatXData
 
 
         // --- Message Management ---
-        public bool SendLobbyMessage(string lobbyName, PlayerMessage message)
+        public void SendLobbyMessage(string lobbyName, PlayerMessage message)
         {
             db.SendLobbyMessage(lobbyName, message);
-            return true;
         }
 
         public List<PlayerMessage> GetLobbyMessages(string lobbyName)
@@ -90,10 +95,9 @@ namespace MortalCombatXData
             return db.GetLobbyMessages(lobbyName);
         }
 
-        public bool SendPrivateDM(string user, string targetPlayer, PlayerMessage message)//brian - need quality check
+        public void SendPrivateDM(string user, string targetPlayer, PlayerMessage message)//brian - need quality check
         {
             db.SendPrivateDM(user, targetPlayer, message);
-            return true;
         }
 
         public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer) //brian - this links to the Database.cs GetDMS function i made
@@ -114,17 +118,6 @@ namespace MortalCombatXData
         public string GetLastDMFrom(string target)
         {
             return db.GetLastDMFrom(target);
-        }
-
-        // --- File Sharing ---
-        public bool ShareFile(string lobbyName, string link)     // *** TEMPORARY
-        {
-            return true;
-        }
-
-        public bool GetSharedFiles(string lobbyName)     // *** TEMPORARY
-        {
-            return true;
         }
     }
 }

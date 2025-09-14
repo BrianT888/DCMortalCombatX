@@ -23,31 +23,35 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class PrivateDMScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
         private string username;
         public string targetPlayer { get; set; }
-        private bool keepPolling = true;
-        LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm 
+        LobbyDMScreen lobbyDMScreen;//brian - this is to close the lobbydm when we decide to logout from the privatedm
+        private CallbackHandler callbackHandler;
 
-        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerInterface foob, LobbyDMScreen lobbyDMScreen)
+        public PrivateDMScreen(string username, string targetPlayer, GamingLobbyServerDuplexInterface foob, LobbyDMScreen lobbyDMScreen, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;
             this.targetPlayer = targetPlayer;
             this.foob = foob;
             this.lobbyDMScreen = lobbyDMScreen;
+            this.callbackHandler = callbackHandler;
 
             UsernameTitle.Text = username;
 
             TargetPlayer.Text = targetPlayer;
 
-            Polling();
+            // Subscribe to events
+            callbackHandler.PrivateMessageReceived += async (lobby) => await Dispatcher.InvokeAsync(UpdateDMStats);
+
+            // Load initial lobby stats
+            Task.Run(async () => await UpdateDMStats());
         }
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.Logout(username));
                 LoginScreen loginScreen = new LoginScreen();
                 loginScreen.Show();
@@ -60,11 +64,10 @@ namespace MortalCombatXDuplexClient
             }
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - i think returning from a private dm should just close the window nothing else so no need for async since not using foob?
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                keepPolling = false;
                 lobbyDMScreen.RemoveClosedPrivateDMScreen(this);//brian - this is to remove this private dm from the list of open private dms in the lobbydm screen
                 this.Close();
             }
@@ -109,16 +112,7 @@ namespace MortalCombatXDuplexClient
                 Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
             } else
             {
-                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });//
-            }
-        }
-
-        private async void Polling()//brian - my version of ur polling system
-        {
-            while (keepPolling)
-            {
-                await UpdateDMStats();
-                await Task.Delay(2000);
+                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });
             }
         }
     }

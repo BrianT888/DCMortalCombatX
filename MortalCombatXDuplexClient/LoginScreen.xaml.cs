@@ -1,11 +1,12 @@
-﻿using System;
-using System.ServiceModel;
+﻿using GamingLobbyServer;
+using MortalCombatXLibrary;
+using System;
 using System.Collections.Generic;
+using System.ServiceModel;
+using System.ServiceModel.Channels;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using GamingLobbyServer;
-using System.Threading.Tasks;
-using MortalCombatXLibrary;
 
 namespace MortalCombatXDuplexClient
 {
@@ -14,26 +15,30 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LoginScreen : Window
     {
-        private GamingLobbyServerInterface foob;
+        private GamingLobbyServerDuplexInterface foob;
+        private CallbackHandler callbackHandler;
         public string LoggedInUsername { get; private set; }
         public LoginScreen()
         {
             InitializeComponent();
 
-            ChannelFactory<GamingLobbyServerInterface> foobFactory;
+            ChannelFactory<GamingLobbyServerDuplexInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();
 
-            //brian - don't think we need timeout timers right
+            // Create callback handler
+            callbackHandler = new CallbackHandler();
 
-            string url = "net.tcp://localhost:8200/GamingLobbyService";
-            foobFactory = new ChannelFactory<GamingLobbyServerInterface>(tcp, url);
+            // Create duplex channel
+            InstanceContext context = new InstanceContext(callbackHandler);
+            string url = "net.tcp://localhost:8201/GamingLobbyDuplexService";
+            foobFactory = new DuplexChannelFactory<GamingLobbyServerDuplexInterface>(context, tcp, url);
             foob = foobFactory.CreateChannel();
         }
 
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = EnteredText.Text.Trim();
-
+             
 
             if (!string.IsNullOrEmpty(username))
             {
@@ -44,8 +49,11 @@ namespace MortalCombatXDuplexClient
 
                     await Task.Run(() => foob.Login(username));
 
+                    // Register for callbacks
+                    foob.RegisterForCallbacks(username);
+
                     // Go to lobby screen
-                    LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+                    LobbyScreen lobbyScreen = new LobbyScreen(username, foob, callbackHandler);
                     lobbyScreen.Show();
                     this.Close();
                 }

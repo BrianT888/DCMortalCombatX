@@ -16,6 +16,7 @@ namespace GamingLobbyServer
     {
         private DataServerInterface foob;
         uint LogNumber = 0;
+        private static readonly object loginLock = new object();
 
         public GamingLobbyServer()
         {
@@ -38,35 +39,63 @@ namespace GamingLobbyServer
         }
 
         // --- Player Management ---
-        public bool Login(string username)
+        public void Login(string username)
         {
-            // Check if username already exists
-            List<Player> currentPlayers = foob.GetAllPlayers();
-            foreach (Player p in currentPlayers)
+            lock (loginLock)
             {
-                if (p.Username.ToLower() == username.ToLower())     
-                {
-                    var fault = new UsernameExistsFault { Message = "That username is already taken." };
-                    throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
-                }
-            }
 
-            bool success = foob.AddNewPlayer(username);
-            if (success)
-            {
+                bool exists = false;
+                // Check if username already exists
+                List<Player> currentPlayers = foob.GetAllPlayers();
+                foreach (Player p in currentPlayers)
+                {
+                    if (p.Username.ToLower() == username.ToLower())
+                    {
+                        if (p.isLoggedIn)
+                        {
+                            var fault = new UsernameExistsFault { Message = "That username is already taken." };
+                            throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
+                        }
+                        else
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!exists)
+                {
+                    foob.AddNewPlayer(username);
+                }
+                foob.SetIsLoggedIn(username, true);
                 Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
             }
-            return success;
         }
 
-        public bool Logout(string username)
+        public void SetIsLoggedIn(string username, bool IsLoggedIn)
         {
-            bool success = foob.RemovePlayer(username);
-            if (success)
+            foob.SetIsLoggedIn(username, IsLoggedIn);
+        }
+
+        private void KickFromLobby(string username)
+        {
+            List<Lobby> lobbies = foob.GetAllLobbies();
+
+            foreach (Lobby l in lobbies)
             {
-                Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+                if (l.Players.TryRemove(username, out _))
+                {
+                    foob.RemovePlayerFromLobby(l.LobbyName, username);
+                }
             }
-            return success;
+        }
+
+        public void Logout(string username)
+        {
+            foob.SetIsLoggedIn(username, false);
+            KickFromLobby(username);
+            Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
         }
 
         public List<Player> GetAllPlayers()
@@ -95,7 +124,7 @@ namespace GamingLobbyServer
 
 
         // --- Lobby Management ---
-        public bool CreateLobby(string lobbyName)
+        public void CreateLobby(string lobbyName)
         {
             // Check if lobby name already exists
             List<Lobby> currentLobbies = foob.GetAllLobbies();
@@ -108,12 +137,10 @@ namespace GamingLobbyServer
                 }
             }
 
-            bool success = foob.CreateLobby(lobbyName);
-            if (success)
+            if (foob.CreateLobby(lobbyName))
             {
                 Log($"Lobby '{lobbyName}' successfully created.\nLobby list: " + string.Join(", ", foob.GetAllLobbies().Select(l => l.LobbyName)));
             }
-            return success;
         }
 
         public bool DeleteLobby(string lobbyName)
@@ -172,11 +199,11 @@ namespace GamingLobbyServer
 
 
         // --- Message Management ---
-        public bool SendLobbyMessage(string lobbyName, string username, string message)
+        public void SendLobbyMessage(string lobbyName, string username, string message)
         {
             try
             {
-                return foob.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
+               foob.SendLobbyMessage(lobbyName, new PlayerMessage{ Sender = username, Content = message });
             }
             catch (Exception ex)
             {
@@ -184,12 +211,11 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
+        public void SendPrivateDM(string user, string targetPlayer, string message)
         {
             try
             {
                 foob.SendPrivateDM(user, targetPlayer, new PlayerMessage { Sender = user, Content = message});
-                return true;//brian - lowk idk what to do this this return value lol
             }
             catch (Exception ex)
             {
@@ -197,7 +223,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)
         {
             try
             {
@@ -221,7 +247,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool CheckNewDM(string user)//brian - still need to quality check
+        public bool CheckNewDM(string user)
         {
             try
             {
@@ -233,7 +259,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public void SetDMFlag(string user, bool flag)//brian - still need to quality check
+        public void SetDMFlag(string user, bool flag)
         {
             try
             {
@@ -245,38 +271,11 @@ namespace GamingLobbyServer
             }
         }
 
-        public string GetLastDMFrom(string user)//brian - still need to quality check
+        public string GetLastDMFrom(string user)
         {
             try
             {
                 return foob.GetPlayer(user).lastDMFrom;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-        // --- File Sharing ---
-        public bool GetSharedFiles(string lobbyName)     // not done
-        {
-            try
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-
-
-        public bool ShareFile(string lobbyName, string link)     // not done
-        {
-            try
-            {
-                return false;
             }
             catch (Exception ex)
             {

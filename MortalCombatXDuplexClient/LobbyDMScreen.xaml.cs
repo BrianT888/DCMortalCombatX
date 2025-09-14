@@ -25,26 +25,33 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LobbyDMScreen : Window
     {
-        private GamingLobbyServerInterface foob;//brian - im just keeping the same style as you did for the previous screen
-        private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
+        private GamingLobbyServerDuplexInterface foob;
+        private string username;
         private string lobbyName;
-        private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
+        private CallbackHandler callbackHandler;
 
-        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerInterface foob)
+        public LobbyDMScreen(string username, string lobbyName, GamingLobbyServerDuplexInterface foob, CallbackHandler callbackHandler)
         {
             InitializeComponent();
             this.username = username;
             this.lobbyName = lobbyName;
             this.foob = foob;
+            this.callbackHandler = callbackHandler;
 
             UsernameTitle.Text = username;
-
             LobbyNameTitle.Text = lobbyName;
-            Polling();
+
+            // Subscribe to events
+            callbackHandler.LobbyMessagesUpdated += async (lobby) => await Dispatcher.InvokeAsync(UpdateLobbyStats);
+            callbackHandler.PrivateMessageReceived += async (targetPlayer) => await Dispatcher.InvokeAsync(PrivateDMWindowPopUp);
+            callbackHandler.LobbyPlayersUpdated += async (lobby) => await Dispatcher.InvokeAsync(UpdateLobbyStats);
+
+            // Load initial lobby stats
+            Task.Run(async () => await UpdateLobbyStats());
         }
 
-        private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
+        private void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
             if (PlayersInLobbyList.SelectedItem != null)
             {
@@ -57,7 +64,7 @@ namespace MortalCombatXDuplexClient
 
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == selectedPlayer) == null)
                 {
-                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this);
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, selectedPlayer, foob, this, callbackHandler);
                     privateDMScreen.Show();
                     openPrivateDMScreens.Add(privateDMScreen);
                 }
@@ -89,11 +96,10 @@ namespace MortalCombatXDuplexClient
             }
         }
 
-        private async void LogoutButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.Logout(username));
                 LoginScreen loginScreen = new LoginScreen();
                 loginScreen.Show();
@@ -106,13 +112,12 @@ namespace MortalCombatXDuplexClient
 
         }
 
-        private async void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                keepPolling = false;
                 await Task.Run(() => foob.LeaveLobby(lobbyName, username));
-                LobbyScreen lobbyScreen = new LobbyScreen(username, foob);
+                LobbyScreen lobbyScreen = new LobbyScreen(username, foob, callbackHandler);
                 lobbyScreen.Show();
                 this.Close();
             }
@@ -135,7 +140,7 @@ namespace MortalCombatXDuplexClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));
             List<ChatMessage> displayMessagesWithFiles = new List<ChatMessage>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -180,7 +185,6 @@ namespace MortalCombatXDuplexClient
 
             }
 
-            //brian - diff thread currently, use dispatcher to update ui lists
             Dispatcher.Invoke(() =>
             {
                 LobbyChatList.ItemsSource = displayMessagesWithFiles;
@@ -196,10 +200,9 @@ namespace MortalCombatXDuplexClient
 
             if (newDMorNah && dmer != null)
             {
-                //foob.SetDMFlag(username, false);
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
                 {
-                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
+                    PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this, callbackHandler);
                     privateDMScreen.Show();
                     openPrivateDMScreens.Add(privateDMScreen);
                 }
@@ -262,21 +265,6 @@ namespace MortalCombatXDuplexClient
             {
                 MessageBox.Show($"Error opening file: {ex.Message}");
             }
-        }
-
-        private async void Polling()//brian - my version of ur polling system
-        {
-            while (keepPolling)
-            {
-                await PrivateDMWindowPopUp();
-                await UpdateLobbyStats();
-                await Task.Delay(2000);
-            }
-        }
-
-        protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
-        {
-            keepPolling = false;
         }
 
         public void RemoveClosedPrivateDMScreen(PrivateDMScreen closedScreen)

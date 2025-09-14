@@ -8,27 +8,27 @@ namespace GamingLobbyServer
     [ServiceContract]
     public interface GamingLobbyServerInterface//practically our business tier
     {
-        //Brian - I added a reference to the library, but im unsure if the business interface should ref the library or not?
-        //if not some of these methods i pasted from the data int will have to be changed into smt else, then remove the reference
-        //mainly the ones involving the player, lobby and player messages?
-
         // --- Player Management --- 
         [OperationContract]
         [FaultContract(typeof(UsernameExistsFault))]
-        bool Login(string username);
+        void Login(string username);
 
         [OperationContract]
-        bool Logout(string username);
+        void Logout(string username);
 
         [OperationContract]
         List<Player> GetAllPlayers();
+
         [OperationContract]
         Player GetPlayer(string username);
+
+        [OperationContract]
+        void SetIsLoggedIn(string username, bool isLoggedIn);
 
         // --- Lobby Management ---
         [OperationContract]
         [FaultContract(typeof(LobbyExistsFault))]
-        bool CreateLobby(string lobbyName);
+        void CreateLobby(string lobbyName);
 
         [OperationContract]
         bool DeleteLobby(string lobbyName);
@@ -48,10 +48,10 @@ namespace GamingLobbyServer
 
         // --- Message Management ---
         [OperationContract]
-        bool SendLobbyMessage(string lobbyName, string username, string message);
+        void SendLobbyMessage(string lobbyName, string username, string message);
 
         [OperationContract]
-        bool SendPrivateDM(string user, string targetPlayer, string message);
+        void SendPrivateDM(string user, string targetPlayer, string message);
         [OperationContract]
         ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer);
 
@@ -63,11 +63,5 @@ namespace GamingLobbyServer
         void SetDMFlag(string user, bool flag);
         [OperationContract]
         string GetLastDMFrom(string target);
-
-        // --- File Sharing ---
-        [OperationContract]
-        bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else
-        [OperationContract]
-        bool GetSharedFiles(string lobbyName);
     }
 }
