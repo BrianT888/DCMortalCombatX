@@ -107,10 +107,6 @@ namespace MortalCombatXLibrary
             return null;
         }
 
-        //a: Creating new dm history for v msg is aaaa
-        //MortalCombatXLibrary.Player: Creating new dm history for a msg is aaaa
-
-        //send player is weird reference?
         public void SendPrivateDM(string user, string targetPlayer, PlayerMessage dm)
         {
             if (Players.TryGetValue(user, out Player player) && (Players.TryGetValue(targetPlayer, out Player target)))
@@ -174,7 +170,7 @@ namespace MortalCombatXLibrary
             }
         }
 
-        public Player GetPlayer(string username)//brian - idk why we never had this, ++ quality of life method
+        public Player GetPlayer(string username)
         {
             if (Players.TryGetValue(username, out Player player))
             {

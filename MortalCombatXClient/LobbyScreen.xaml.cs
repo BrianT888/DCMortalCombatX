@@ -130,7 +130,7 @@ namespace MortalCombatXClient
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LogoutButton.IsEnabled = false;//brian - is this necessary? in my one for LobbyDMScreen i don't even both with isEnabled for the button, i swear its instantaneous
+            LogoutButton.IsEnabled = false;
 
             try
             {

@@ -25,8 +25,8 @@ namespace MortalCombatXDuplexClient
     /// </summary>
     public partial class LobbyDMScreen : Window
     {
-        private GamingLobbyServerDuplexInterface foob;//brian - im just keeping the same style as you did for the previous screen
-        private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
+        private GamingLobbyServerDuplexInterface foob;
+        private string username;
         private string lobbyName;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
         private CallbackHandler callbackHandler;
@@ -96,7 +96,7 @@ namespace MortalCombatXDuplexClient
             }
         }
 
-        private async void LogoutButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace MortalCombatXDuplexClient
 
         }
 
-        private async void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace MortalCombatXDuplexClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));
             List<ChatMessage> displayMessagesWithFiles = new List<ChatMessage>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -185,7 +185,6 @@ namespace MortalCombatXDuplexClient
 
             }
 
-            //brian - diff thread currently, use dispatcher to update ui lists
             Dispatcher.Invoke(() =>
             {
                 LobbyChatList.ItemsSource = displayMessagesWithFiles;
@@ -201,7 +200,6 @@ namespace MortalCombatXDuplexClient
 
             if (newDMorNah && dmer != null)
             {
-                //foob.SetDMFlag(username, false);
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
                 {
                     PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this, callbackHandler);

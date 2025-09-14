@@ -59,11 +59,5 @@ namespace GamingLobbyServer
         void SetDMFlag(string user, bool flag);
         [OperationContract]
         string GetLastDMFrom(string target);
-
-        // --- File Sharing ---
-        [OperationContract]
-        bool ShareFile(string lobbyName, string link);     // Not sure how to implement the link, prob have to be changed to smth else
-        [OperationContract]
-        bool GetSharedFiles(string lobbyName);
     }
 }

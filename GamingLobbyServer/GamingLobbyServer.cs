@@ -201,7 +201,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public void SendPrivateDM(string user, string targetPlayer, string message)//brian - still need to quality check
+        public void SendPrivateDM(string user, string targetPlayer, string message)
         {
             try
             {
@@ -213,7 +213,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)//brian - still need to quality check
+        public ConcurrentQueue<PlayerMessage> GetDMS(string user, string targetPlayer)
         {
             try
             {
@@ -237,7 +237,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public bool CheckNewDM(string user)//brian - still need to quality check
+        public bool CheckNewDM(string user)
         {
             try
             {
@@ -249,7 +249,7 @@ namespace GamingLobbyServer
             }
         }
 
-        public void SetDMFlag(string user, bool flag)//brian - still need to quality check
+        public void SetDMFlag(string user, bool flag)
         {
             try
             {
@@ -261,38 +261,11 @@ namespace GamingLobbyServer
             }
         }
 
-        public string GetLastDMFrom(string user)//brian - still need to quality check
+        public string GetLastDMFrom(string user)
         {
             try
             {
                 return foob.GetPlayer(user).lastDMFrom;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-        // --- File Sharing ---
-        public bool GetSharedFiles(string lobbyName)     // not done
-        {
-            try
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception();
-            }
-        }
-
-
-
-        public bool ShareFile(string lobbyName, string link)     // not done
-        {
-            try
-            {
-                return false;
             }
             catch (Exception ex)
             {

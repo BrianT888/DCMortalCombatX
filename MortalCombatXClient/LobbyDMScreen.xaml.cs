@@ -25,8 +25,8 @@ namespace MortalCombatXClient
     /// </summary>
     public partial class LobbyDMScreen : Window
     {
-        private GamingLobbyServerInterface foob;//brian - im just keeping the same style as you did for the previous screen
-        private string username;//brian - personally i think the loginscreens string Username should be lower case for camelcase purposes
+        private GamingLobbyServerInterface foob;
+        private string username;
         private string lobbyName;
         private bool keepPolling = true;
         private List<PrivateDMScreen> openPrivateDMScreens = new List<PrivateDMScreen>();//brian - list of currently open private dm screens, so we can close them all on logout
@@ -89,7 +89,7 @@ namespace MortalCombatXClient
             }
         }
 
-        private async void LogoutButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace MortalCombatXClient
 
         }
 
-        private async void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - self explanatory
+        private async void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace MortalCombatXClient
 
         private async Task UpdateLobbyStats()
         {
-            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));//brian - doing it same format but i don't think we need an await for any of these?
+            List<PlayerMessage> lobbyMessages = await Task.Run(() => foob.GetLobbyMessages(lobbyName));
             List<ChatMessage> displayMessagesWithFiles = new List<ChatMessage>();
             List<Player> playersInLobby = await Task.Run(() => foob.GetPlayersInLobby(lobbyName));
             List<string> displayPlayers = new List<string>();
@@ -180,7 +180,6 @@ namespace MortalCombatXClient
 
             }
 
-            //brian - diff thread currently, use dispatcher to update ui lists
             Dispatcher.Invoke(() =>
             {
                 LobbyChatList.ItemsSource = displayMessagesWithFiles;
@@ -196,7 +195,6 @@ namespace MortalCombatXClient
 
             if (newDMorNah && dmer != null)
             {
-                //foob.SetDMFlag(username, false);
                 if (openPrivateDMScreens.Find(pDMScreen => pDMScreen.targetPlayer == dmer) == null)
                 {
                     PrivateDMScreen privateDMScreen = new PrivateDMScreen(username, dmer, foob, this);
@@ -264,7 +262,7 @@ namespace MortalCombatXClient
             }
         }
 
-        private async void Polling()//brian - my version of ur polling system
+        private async void Polling()
         {
             while (keepPolling)
             {
@@ -274,7 +272,7 @@ namespace MortalCombatXClient
             }
         }
 
-        protected override void OnClosed(EventArgs e)//brian -  is this necessary? i think its for when you close the window with the x button right? i see it in lobbyscreen.xaml
+        protected override void OnClosed(EventArgs e)
         {
             keepPolling = false;
         }

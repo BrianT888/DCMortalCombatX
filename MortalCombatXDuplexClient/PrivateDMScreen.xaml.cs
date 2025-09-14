@@ -64,7 +64,7 @@ namespace MortalCombatXDuplexClient
             }
         }
 
-        private void ReturnButton_Click(object sender, RoutedEventArgs e)//brian - i think returning from a private dm should just close the window nothing else so no need for async since not using foob?
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace MortalCombatXDuplexClient
                 Dispatcher.Invoke(() => LobbyChatList.ItemsSource = dmDisplayList);
             } else
             {
-                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });//
+                Dispatcher.Invoke(() => LobbyChatList.ItemsSource = new List<string> { "No messages yet. Start the conversation!" });
             }
         }
     }
