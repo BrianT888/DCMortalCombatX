@@ -140,8 +140,9 @@ namespace MortalCombatXDuplexClient
             try
             {
                 await Task.Run(() => foob.Logout(Username));
-
-                Application.Current.Shutdown();
+                LoginScreen loginScreen = new LoginScreen();
+                loginScreen.Show();
+                this.Close();
             }
             catch(Exception ex)
             {
