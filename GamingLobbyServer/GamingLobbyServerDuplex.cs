@@ -17,6 +17,7 @@ namespace GamingLobbyServer
         private DataServerInterface foob;
         uint LogNumber = 0;
         private Dictionary<string, GamingLobbyCallback> duplexClients = new Dictionary<string, GamingLobbyCallback>();
+        private static readonly object loginLock = new object();
 
         public GamingLobbyServerDuplex()
         {
@@ -51,33 +52,36 @@ namespace GamingLobbyServer
         // --- Player Management ---
         public void Login(string username)
         {
-            bool exists = false;
-            // Check if username already exists
-            List<Player> currentPlayers = foob.GetAllPlayers();
-            foreach (Player p in currentPlayers)
+            lock (loginLock)
             {
-                if (p.Username.ToLower() == username.ToLower())
+                bool exists = false;
+                // Check if username already exists
+                List<Player> currentPlayers = foob.GetAllPlayers();
+                foreach (Player p in currentPlayers)
                 {
-                    if (p.isLoggedIn)
+                    if (p.Username.ToLower() == username.ToLower())
                     {
-                        var fault = new UsernameExistsFault { Message = "That username is already taken." };
-                        throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
-                    }
-                    else
-                    {
-                        exists = true;
-                        break;
+                        if (p.isLoggedIn)
+                        {
+                            var fault = new UsernameExistsFault { Message = "That username is already taken." };
+                            throw new FaultException<UsernameExistsFault>(fault, new FaultReason(fault.Message));
+                        }
+                        else
+                        {
+                            exists = true;
+                            break;
+                        }
                     }
                 }
-            }
-          
-            if (!exists)
-            {
-                foob.AddNewPlayer(username);
-            }
 
-            SetIsLoggedIn(username, true);         
-            Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+                if (!exists)
+                {
+                    foob.AddNewPlayer(username);
+                }
+
+                SetIsLoggedIn(username, true);
+                Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+            }           
         }
 
         public void SetIsLoggedIn(string username, bool IsLoggedIn)
