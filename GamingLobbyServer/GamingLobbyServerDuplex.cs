@@ -75,9 +75,14 @@ namespace GamingLobbyServer
             {
                 foob.AddNewPlayer(username);
             }
-            
-            foob.GetPlayer(username).isLoggedIn = true;                       
+
+            SetIsLoggedIn(username, true);         
             Log($"Login successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));
+        }
+
+        public void SetIsLoggedIn(string username, bool IsLoggedIn)
+        {
+            foob.SetIsLoggedIn(username, IsLoggedIn);
         }
 
         private void KickFromLobby(string username)
@@ -94,8 +99,8 @@ namespace GamingLobbyServer
         }
 
         public void Logout(string username)
-        {            
-            foob.GetPlayer(username).isLoggedIn = false;
+        {
+            foob.SetIsLoggedIn(username, false);
             duplexClients.Remove(username);
             KickFromLobby(username);
             Log($"Logout successful for '{username}'.\nPlayer list: " + string.Join(", ", foob.GetAllPlayers().Select(p => p.Username)));

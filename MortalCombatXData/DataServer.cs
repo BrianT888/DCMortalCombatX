@@ -47,6 +47,11 @@ namespace MortalCombatXData
             return db.GetPlayer(username);
         }
 
+        public void SetIsLoggedIn(string username, bool isLoggedIn)
+        {
+            db.SetIsLoggedIn(username, isLoggedIn);
+        }
+
         // --- Lobby Management ---
         public bool CreateLobby(string lobbyName)
         {

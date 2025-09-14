@@ -51,7 +51,7 @@ namespace MortalCombatXDuplexClient
             Task.Run(async () => await UpdateLobbyStats());
         }
 
-        private async void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
+        private void PrivateDMPlayerButton_Click(object sender, RoutedEventArgs e)
         {
             if (PlayersInLobbyList.SelectedItem != null)
             {

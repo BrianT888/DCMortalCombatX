@@ -21,8 +21,12 @@ namespace GamingLobbyServer
 
         [OperationContract]
         List<Player> GetAllPlayers();
+
         [OperationContract]
         Player GetPlayer(string username);
+
+        [OperationContract]
+        void SetIsLoggedIn(string username, bool isLoggedIn);
 
         // --- Lobby Management ---
         [OperationContract]

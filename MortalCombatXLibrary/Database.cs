@@ -33,6 +33,12 @@ namespace MortalCombatXLibrary
         {
             return Players.Values.ToList();
         }
+        // Set isLoggedIn bool for a player
+        public void SetIsLoggedIn(string username,  bool isLoggedIn)
+        {
+            Players.TryGetValue(username, out Player p);
+            p.isLoggedIn = isLoggedIn;
+        }
 
         // Create a lobby
         public bool CreateLobby(string lobbyName)
